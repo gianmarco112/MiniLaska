@@ -36,7 +36,22 @@ vector<pair<int,int>> LZ77(const string& s){
 
 };
 
-string decompress(const vector<pair<int,int>>& C);
+string decompress(const vector<pair<int,int>>& C){
+    string res;
+    for(const pair<int,int>& x:C){
+        if(x.second){
+        //x.second ==0 caso base in cui trovo una nuova parola
+           res+=x.first; 
+        }else{
+           for(int i=x.first;i<x.first+x.second;i++){
+               res+=res.at(i);
+           }
+        }
+    return res;
+    }
+
+
+}
 
 
 int main(){
