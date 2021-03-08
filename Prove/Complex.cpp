@@ -3,7 +3,7 @@
 struct complex{
     double r;
     double i;
-    complex somma(complex a){
+    complex somma(complex a)const {
         complex res{a};
         res.r+=r;//r appartiene ad a, il complex passato come parametro
         res.i+=i;
@@ -25,7 +25,12 @@ complex somma2(complex a, complex b){//devo per forza fare il passaggio per copi
     a.i+=b.i;
     return a;
 }
+complex somma3(const complex& a, const complex &b, const complex &c){
+    complex res{a};
+    res=a.somma(b);
+    res=res.somma(c); 
 
+}
 int main(){
     /*complex a{2.0,5.0};
     complex b{.r=2.0,.i=5.0 };
