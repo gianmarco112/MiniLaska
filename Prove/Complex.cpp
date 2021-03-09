@@ -1,8 +1,10 @@
 #include <iostream>
 
 struct complex{
+    //private:
     double r;
     double i;
+    //public:
     complex somma(complex a)const {
         complex res{a};
         res.r+=r;//r appartiene ad a, il complex passato come parametro
@@ -12,6 +14,9 @@ struct complex{
     void azzerati(){
         r=0.0;
         i=0.0;
+    }
+    void coniuga(){
+        i=-i;
     }
 };
 complex somma(complex a, complex b){//Posso anche fare il passaggio per reference 
