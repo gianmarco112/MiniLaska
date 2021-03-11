@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
-#include <string>
-#include <vector>
+
 using namespace std;
 string featuredProduct(vector<string> products){
     sort(products.begin(), products.end());

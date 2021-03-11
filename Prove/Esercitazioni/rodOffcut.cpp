@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include <vector>
+
 using namespace std;
 int minlen(const vector<int>& lengths){
     int min_len= numeric_limits<int>::max();
