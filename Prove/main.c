@@ -39,10 +39,6 @@ struct blanks{
     coord_t coord;
 };
 
-
-
-
-
 typedef struct pedina{
     enum color colore;
     struct coord coord;
@@ -236,7 +232,8 @@ void sel_pedina(enum color colore,field_t *field){
     
     /*Trovo l'indice della pedina da spostare*/
     for(i=0;i<NPEDINE;i++){
-        if(!(field->pedine[i].coord.x-xsol)&&!(field->pedine[i].coord.y-ysol)){
+        if((field->pedine[i].coord.x==xsol)&&(field->pedine[i].coord.y==ysol)&&
+			(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP)){
             index=i;
             break;
         }
@@ -275,6 +272,7 @@ void sel_pedina(enum color colore,field_t *field){
         field->blanks[field->nblanks].coord=field->pedine[indexM].coord;
         /*Incremento il numero di spazi*/
         field->nblanks++;
+		
         /*Nel caso in cui rubo una torre libero le pedine sotto*/
         }else if(field->pedine[indexM].altezza==TOP){
 			/*Cerco se esiste una pedina al centro ovvero se la torre era da tre pedine*/
@@ -307,23 +305,24 @@ void sel_pedina(enum color colore,field_t *field){
                     }
                 }
             }
-        }
-        field->pedine[index].altezza=TOP;
-        field->pedine[index].coord=mossa;
-        if(control==10){
-            field->pedine[j].coord=mossa;
-            field->pedine[j].altezza=CENTER;
-        }else if(!control){
-            field->pedine[indexM].altezza=BOTTOM;
-        }else{
-            field->pedine[indexM].in_game=false;
-            field->pedine[indexM].coord.x=-1;
-            field->pedine[indexM].coord.y=-1;
-            field->pedine[j].coord=mossa;
-            field->pedine[k].coord=mossa;
-        }
-        if(field->pedine[indexM].in_game)
+			field->pedine[index].coord=mossa;
+			if(control==10){
+				field->pedine[j].coord=mossa;
+				field->pedine[j].altezza=CENTER;
+			}else if(!control){
+				field->pedine[indexM].altezza=BOTTOM;
+			}else{
+				field->pedine[indexM].in_game=false;
+				field->pedine[indexM].coord.x=-1;
+				field->pedine[indexM].coord.y=-1;
+				field->pedine[j].coord=mossa;
+				field->pedine[k].coord=mossa;
+			}
+		}
+        if(field->pedine[indexM].in_game){
             field->pedine[indexM].coord=mossa;
+			printf("mossa\n");
+		}
     }
     else{
         /*Scambio la pedina e lo spazio*/
@@ -341,6 +340,11 @@ void sel_pedina(enum color colore,field_t *field){
     }
 }
 
+
+
+
+
+
 /*Viene chiamata dalla funzione sel_pedina*/
 /*prende in input il colore del giocatore, il campo di gioco e l'indice della pedina da muovere e print le possibili mosse di quella pedina*/
 int possible_moves(enum color colore, field_t *field,int index){
@@ -356,34 +360,6 @@ int possible_moves(enum color colore, field_t *field,int index){
             col=-1;
         }
     if(field->pedine[index].is_obbligata){
-        /*for(i=0;i<NPEDINE;i++){
-            /*Controllo quale o quali pedina/e devo mangiare
-            if(i!=index&&field->pedine[i].coord.y == field->pedine[index].coord.y+col&&
-                field->pedine[i].colore!=field->pedine[index].colore&&
-                (field->pedine[i].altezza=TOP||field->pedine[i].altezza==SINGLE)){
-                if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){
-                    /*Cerco gli spazi di destinazione della mia pedina
-                    for(j=0;j<field->nblanks;j++){
-                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
-                        (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
-                        sol[c]=j;
-                        c++;
-                        printf("%d: %d%d\n",c,field->blanks[j].coord.x,field->blanks[j].coord.y);
-                        }
-                    }
-                }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){
-                    /*Cerco gli spazi di destinazione della mia pedina
-                    for(j=0;j<field->nblanks;j++){
-                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
-                        (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
-                        sol[c]=j;
-                        c++;
-                        printf("%d: %d%d\n",c,field->blanks[j].coord.x,field->blanks[j].coord.y);
-                        }
-                    }
-                }
-            }
-        }*/
 	int i,j,inizio,fine,col;
     if(!colore){
             inizio=0;
@@ -406,7 +382,7 @@ int possible_moves(enum color colore, field_t *field,int index){
                         (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
                         sol[c]=j;
                         c++;
-                        printf("%d: %d%d\n",c,field->blanks[j].coord.x,field->blanks[j].coord.y);
+                        printf("%d: %d%d\n",c,field->blanks[j].coord.y,field->blanks[j].coord.x);
                         }
                     }
                 }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
@@ -416,7 +392,7 @@ int possible_moves(enum color colore, field_t *field,int index){
                         (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
                         sol[c]=j;
                         c++;
-                        printf("%d: %d%d\n",c,field->blanks[j].coord.x,field->blanks[j].coord.y);
+                        printf("%d: %d%d\n",c,field->blanks[j].coord.y,field->blanks[j].coord.x);
                         }
                     }
                 }
@@ -441,7 +417,7 @@ int possible_moves(enum color colore, field_t *field,int index){
         printf("error \n");
     }
     printf("Dove vuoi muovere la pedina?\n(seleziona il numero corrispondente alla casella di destinazione): ");
-    while(selezione==-1||selezione>c)   
+    while(selezione==-1||selezione-1>c)   
         scanf("%d",&selezione);
     printf("\n");
     indexb=sol[selezione-1];
@@ -654,8 +630,6 @@ void fintomain(){
 }
 
 int main() {
-    enum color a=BLACK,b=BLACK;
-    
     field_t field;
     start_game2(&field);
     /*for(i=0;i<NPEDINE;i++){
@@ -669,7 +643,7 @@ int main() {
         print_field(&field);
         movable(BLACK,&field);
         sel_pedina(BLACK,&field);
-        /*info(&field);*/
+        info(&field);
     }
     free_pedine(&field);
     return 0;
