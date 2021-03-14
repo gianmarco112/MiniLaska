@@ -76,7 +76,7 @@ int possible_moves(enum color colore, field_t *field,int index);
 void create_pedine(field_t *field);
 void create_blanks(field_t *field);
 void movable(enum color colore, field_t *field);
-void obbligata(field_t *field,int index);
+void obbligata(field_t *field,int index, enum color colore);
 int coord_to_index(field_t *field, coord_t coord);
 char* coord_to_pedina (field_t *field, coord_t cor);
 int altezza_pedina(field_t *field, coord_t coord);
@@ -86,113 +86,147 @@ void endgame(field_t *field);
 void start_game2(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/
 
+
+int min(int a,int b){
+    if(a<b)
+        return a;
+    else
+        return b;
+}
+
+
 void endgame(field_t *field){
 
 }
+
+void info(field_t *field){
+    int ok,xsol,ysol,index;
+    coord_t sol;
+    printf("Vuoi informazioni su qualche pedina? 0=no 1=si \n");
+    scanf("%d",&ok);
+    if(ok){
+        printf("Quale posizione?\n");
+        printf("Riga: ");
+        scanf("%d",&ysol);
+        printf("Colonna: ");
+        scanf("%d",&xsol);
+        sol.x=xsol;
+        sol.y=ysol;
+        index=coord_to_index(field,sol);
+        printf("%d\n",index);
+        if(field->pedine[index].colore)
+            printf("WHITE\n");
+        else
+            printf("BLACK\n"); 
+    }
+}
+
 /*Funzione che controlla se le varie pedine si possono muovere e ne modifica il parametro*/
 void movable(enum color colore, field_t *field){
-    int i,j;
+    int i,j,inizio,fine,col;
     /*Resetto le impostazioni di movable e obbligata a false*/
     
     /*Imposto la fine della partita a true, e successivamente se qualche pedina si può muovere la partita non è finita*/
     field->partita.END_OF_PLAY=true;
     if(colore){
-        for(i=0;i<NPEDINE/2;i++){
-            field->pedine[i].is_movable=false;
-            field->pedine[i].is_obbligata=false;
-            if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
-                obbligata(field, i);
-                for(j=0;j<field->nblanks;j++){
-                    if(field->blanks[j].coord.y==field->pedine[i].coord.y+1&&(
-                        field->blanks[j].coord.x==field->pedine[i].coord.x+1|| 
-                        field->blanks[j].coord.x==field->pedine[i].coord.x-1)){
-                            field->pedine[i].is_movable=true;
-                            field->partita.END_OF_PLAY=false;
-                        }
-                    
-                }
-            }
-        }
+            inizio=0;
+            fine=NPEDINE/2;
+            col=1;
     }else{
-        for(i=NPEDINE/2;i<NPEDINE;i++){
-            field->pedine[i].is_movable=false;
-            field->pedine[i].is_obbligata=false;
-            if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
-                obbligata(field, i);
-                for(j=0;j<field->nblanks;j++){
-                    if(field->blanks[j].coord.y==field->pedine[i].coord.y+1&&(
-                        field->blanks[j].coord.x==field->pedine[i].coord.x+1|| 
-                        field->blanks[j].coord.x==field->pedine[i].coord.x-1)){
-                            field->pedine[i].is_movable=true;
-                            field->partita.END_OF_PLAY=false;
-                        }
-                    }
+            inizio=NPEDINE/2;
+            fine=NPEDINE;
+            col=-1;
+    }
+    for(i=inizio;i<fine;i++){
+        field->pedine[i].is_movable=false;
+        field->pedine[i].is_obbligata=false;
+        if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
+            obbligata(field, i,colore);
+            for(j=0;j<field->nblanks;j++){
+                if(field->blanks[j].coord.y==field->pedine[i].coord.y+col&&(
+                    field->blanks[j].coord.x==field->pedine[i].coord.x+1|| 
+                    field->blanks[j].coord.x==field->pedine[i].coord.x-1)){
+                    field->pedine[i].is_movable=true;
+                    field->partita.END_OF_PLAY=false;
                 }
             }
         }
     }
+}
 
 /*Funzione che data una pedina mi restituisce se essa è obbligata a mangiare o meno*/
-void obbligata(field_t *field,int index){
-    int i,j;
-    for(i=0;i<NPEDINE;i++){
-        /*Controllo solo le pedine che posso muovere perchè sono o il TOP della torre o pedina singola*/
+void obbligata(field_t *field,int index, enum color colore){
+    int i,j,inizio,fine,col;
+    if(!colore){
+            inizio=0;
+            fine=NPEDINE/2;
+            col=-1;
+        }else{
+            inizio=NPEDINE/2;
+            fine=NPEDINE;
+            col=1;
+        }
+    for(i=inizio;i<fine;i++){
+        /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
         if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
             /*Controllo quale o quali pedina/e devo mangiare*/
-            if(field->pedine[i].coord.y == field->pedine[index].coord.y+1&&
-            (field->pedine[i].coord.x==field->pedine[index].coord.x+1||
-            field->pedine[i].coord.x==field->pedine[index].coord.x-1)&&
-            field->pedine[i].colore!=field->pedine[index].colore){
-                /*Cerco gli spazi di destinazione della mia pedina*/
-                for(j=0;j<field->nblanks;j++){
-                    if(field->blanks[j].coord.y==field->pedine[i].coord.y+1&&
-                    (field->blanks[j].coord.x==field->pedine[i].coord.x+1||
-                    field->blanks[j].coord.x==field->pedine[i].coord.x-1)){
-                       field->pedine[index].is_obbligata=true;
-                       field->partita.END_OF_PLAY=false;
+            if(field->pedine[i].coord.y == field->pedine[index].coord.y+col/*Deve essere nella riga successiva*/){
+                if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){/*Cerco in una diagonale*/
+                    /*Cerco gli spazi di destinazione della mia pedina*/
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
+                        field->pedine[index].is_obbligata=true;
+                        field->pedine[index].is_movable=true;
+                        field->partita.END_OF_PLAY=false;
+                        }
+                    }
+                }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
+                    /*Cerco gli spazi di destinazione della mia pedina*/
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
+                        field->pedine[index].is_obbligata=true;
+                        field->pedine[index].is_movable=true;
+                        field->partita.END_OF_PLAY=false;
+                        }
                     }
                 }
             }
         }
     }
+    
 }
 
 
 /*function responsable of looking for movable pedine or mangiate obbligatorie and it prints the list of available ones*/
 void sel_pedina(enum color colore,field_t *field){
     int i,xsol=-1,ysol=-1, index=NPEDINE+1,indexb;
+    int inizio,fine;
     bool_t control=false;
-   coord_t mossa;
+    coord_t mossa;
 
-    if(colore==WHITE){
+    if(colore){
+        inizio=0;
+        fine=NPEDINE/2;
+    }else{
+        inizio=NPEDINE/2;
+        fine=NPEDINE;
+    }
         /*Prima controllo se ho la possibilità di mangiare una pedina*/
-        for(i=0;i<NPEDINE/2;i++){
+        for(i=inizio;i<fine;i++){
             if(field->pedine[i].is_obbligata){
-                printf("RC %d %d \n",field->pedine[i].coord.y,field->pedine[i].coord.x);
+                printf("RC %d%d Obbligata\n",field->pedine[i].coord.y,field->pedine[i].coord.x);
                 control=true;
             }
         }  
         /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
         if(!control)
-        for(i=0;i<(NPEDINE/2);i++){
+        for(i=inizio;i<fine;i++){
             if(field->pedine[i].is_movable)
                 printf("RC %d%d \n",field->pedine[i].coord.y,field->pedine[i].coord.x);
         }
-    }else{
-        /*Prima controllo se ho la possibilità di mangiare una pedina*/
-        for(i=NPEDINE/2;i<NPEDINE;i++){
-            if(field->pedine[i].is_obbligata){
-                printf("RC %d %d \n",field->pedine[i].coord.y,field->pedine[i].coord.x);
-                control=true;
-            }
-        }
-        /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
-        if(!control)
-        for(i=NPEDINE/2;i<NPEDINE;i++){
-            if(field->pedine[i].is_movable)
-                printf("RC %d%d \n",field->pedine[i].coord.y,field->pedine[i].coord.x);
-        }
-    }
+    
     printf("Inserisci le coordinate della pedina: \n");
         printf("Riga: ");
         scanf("%d",&ysol);
@@ -218,44 +252,78 @@ void sel_pedina(enum color colore,field_t *field){
         mossa=field->blanks[indexb].coord;
     /*Mi ritorna l'indice dello spazio bianco di destinazione dal quale estraggo le cordinate*/    
     }
-
+    /*Se è una mossa obbligata*/
     if(field->pedine[index].is_obbligata){
-        /*Sposto lo spazio nella posizione della mia pedina, 
-        ne creo uno su quella mangiata, 
-        sposto le due pedine, 
-        assegno le altezze*/
-        int indexM=index;/*CAMBIARE INDEX CON LA POSIZIONE DELLA PEDINA MANGIATA*/
-        int i,j=0;
+        
+        int indexM=0;
+        int i,j=0,k=0;
         int control=0;/**/
-        /*Sposto lo spazio e ne creo uno in più*/
+
+        for(i=0;i<NPEDINE;i++){
+            /*Ricavo l'indice della pedina da mangiare, 
+            prendo il minore tra le cordinate e ci aggiungo uno per trovare la pedina di mezzo*/
+            if(field->pedine[i].coord.y==min(field->pedine[index].coord.y,field->blanks[indexb].coord.y)+1&&
+            field->pedine[i].coord.x==min(field->pedine[index].coord.x,field->blanks[indexb].coord.x)+1&&
+            (field->pedine[i].altezza==TOP||field->pedine[i].altezza==TOP))
+            indexM=i;
+        }
+        /*Sposto lo spazio*/ 
         field->blanks[indexb].coord=field->pedine[index].coord;
+        /*Caso in cui la pedina mangiata sia singola*/
+        if(field->pedine[indexM].altezza==SINGLE){
+        /*ne creo uno in più*/
         field->blanks[field->nblanks].coord=field->pedine[indexM].coord;
+        /*Incremento il numero di spazi*/
         field->nblanks++;
-        if(field->pedine[index].altezza!=SINGLE){
+        /*Nel caso in cui rubo una torre libero le pedine sotto*/
+        }else if(field->pedine[indexM].altezza==TOP){
+			/*Cerco se esiste una pedina al centro ovvero se la torre era da tre pedine*/
+            for(i=0;i<NPEDINE;i++){
+                if(i!=indexM && 
+                field->pedine[i].coord.x==field->pedine[indexM].coord.x&&
+                field->pedine[i].coord.y==field->pedine[indexM].coord.y){
+                    if(field->pedine[i].altezza==CENTER){
+						field->pedine[i].altezza=TOP;
+                    }
+                }
+            }
+        }
+		
+        
+        /*Nel caso la pedina che mangia sia una torre*/
+        if(field->pedine[index].altezza==TOP){
+            /*Cerco le pedine sottostanti*/
             for(i=0;i<NPEDINE;i++){
                 if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
                 field->pedine[i].coord.y==field->pedine[index].coord.y){
+                    /*Sposto le pedine che compongono la torre*/
                     field->pedine[i].coord=mossa;
-                    if(field->pedine[i].altezza==CENTER)
+                    if(field->pedine[i].altezza==CENTER){
                         control++;
-                    else if(field->pedine[i].altezza==BOTTOM){
+                        k=i;
+                    }else if(field->pedine[i].altezza==BOTTOM){
                         control+=10;
-                        j+=i;
+                        j=i;
                     }
                 }
             }
         }
         field->pedine[index].altezza=TOP;
+        field->pedine[index].coord=mossa;
         if(control==10){
+            field->pedine[j].coord=mossa;
             field->pedine[j].altezza=CENTER;
         }else if(!control){
-            field->pedine[indexM].coord=mossa;
             field->pedine[indexM].altezza=BOTTOM;
         }else{
             field->pedine[indexM].in_game=false;
             field->pedine[indexM].coord.x=-1;
             field->pedine[indexM].coord.y=-1;
+            field->pedine[j].coord=mossa;
+            field->pedine[k].coord=mossa;
         }
+        if(field->pedine[indexM].in_game)
+            field->pedine[indexM].coord=mossa;
     }
     else{
         /*Scambio la pedina e lo spazio*/
@@ -278,36 +346,91 @@ void sel_pedina(enum color colore,field_t *field){
 int possible_moves(enum color colore, field_t *field,int index){
     int i,j,c=0,selezione=-1,indexb;
     /*c è l'indice dell'array di coordinate, selezione è l'indice dello stesso array che però rappresenta la selezione dell'utente*/
-    coord_t sol[20];
+    int sol[20];
     /*Ho un array di coordinate delle possibili mosse che vengono proposte all'utente*/
     /*Se la pedina che devo muovere is_obbligata*/
+    int col;
+        if(colore){
+            col=1;
+        }else{
+            col=-1;
+        }
     if(field->pedine[index].is_obbligata){
-        for(i=0;i<NPEDINE;i++){
-            /*Controllo quale o quali pedina/e devo mangiare*/
-            if((field->pedine[i].coord.y == field->pedine[index].coord.y+1)&&
-            (field->pedine[i].coord.x==field->pedine[index].coord.x+1||
-            field->pedine[i].coord.x==field->pedine[index].coord.x-1)){
-                /*Cerco gli spazi di destinazione della mia pedina*/
-                for(j=0;j<field->nblanks;j++){
-                    if(field->blanks[i].coord.y==field->pedine[index].coord.y+1&&(
-                    field->blanks[i].coord.x==field->pedine[index].coord.x+1|| 
-                    field->blanks[i].coord.x==field->pedine[index].coord.x-1)){
-                        sol[c]=field->blanks[j].coord;
+        /*for(i=0;i<NPEDINE;i++){
+            /*Controllo quale o quali pedina/e devo mangiare
+            if(i!=index&&field->pedine[i].coord.y == field->pedine[index].coord.y+col&&
+                field->pedine[i].colore!=field->pedine[index].colore&&
+                (field->pedine[i].altezza=TOP||field->pedine[i].altezza==SINGLE)){
+                if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){
+                    /*Cerco gli spazi di destinazione della mia pedina
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
+                        sol[c]=j;
                         c++;
-                        printf("%d: %d%d",c,sol[c-1].x,sol[c-1].y);
+                        printf("%d: %d%d\n",c,field->blanks[j].coord.x,field->blanks[j].coord.y);
+                        }
+                    }
+                }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){
+                    /*Cerco gli spazi di destinazione della mia pedina
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
+                        sol[c]=j;
+                        c++;
+                        printf("%d: %d%d\n",c,field->blanks[j].coord.x,field->blanks[j].coord.y);
+                        }
+                    }
+                }
+            }
+        }*/
+	int i,j,inizio,fine,col;
+    if(!colore){
+            inizio=0;
+            fine=NPEDINE/2;
+            col=-1;
+        }else{
+            inizio=NPEDINE/2;
+            fine=NPEDINE;
+            col=1;
+        }
+    for(i=inizio;i<fine;i++){
+        /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
+        if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
+            /*Controllo quale o quali pedina/e devo mangiare*/
+            if(field->pedine[i].coord.y == field->pedine[index].coord.y+col/*Deve essere nella riga successiva*/){
+                if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){/*Cerco in una diagonale*/
+                    /*Cerco gli spazi di destinazione della mia pedina*/
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
+                        sol[c]=j;
+                        c++;
+                        printf("%d: %d%d\n",c,field->blanks[j].coord.x,field->blanks[j].coord.y);
+                        }
+                    }
+                }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
+                    /*Cerco gli spazi di destinazione della mia pedina*/
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
+                        sol[c]=j;
+                        c++;
+                        printf("%d: %d%d\n",c,field->blanks[j].coord.x,field->blanks[j].coord.y);
+                        }
                     }
                 }
             }
         }
+    }
     
     /*Se non ho mosse obbligatorie controllo le mosse di una casella in diagonale*/
     }else{
         for(i=0;i<field->nblanks;i++){
-            if(field->blanks[i].coord.y==field->pedine[index].coord.y+1&&(
+            if(field->blanks[i].coord.y==field->pedine[index].coord.y+col&&(
                     field->blanks[i].coord.x==field->pedine[index].coord.x+1|| 
                     field->blanks[i].coord.x==field->pedine[index].coord.x-1)) {
-                    sol[c].x=field->blanks[i].coord.x;
-                    sol[c].y=field->blanks[i].coord.y;
+                    sol[c]=i;
                     c++;
                     printf("%d: %d%d\n", c ,field->blanks[i].coord.y, field->blanks[i].coord.x);
                 }
@@ -317,20 +440,11 @@ int possible_moves(enum color colore, field_t *field,int index){
     if(c==0){
         printf("error \n");
     }
-    printf("Dove vuoi muovere la pedina?(seleziona il numero corrispondente alla casella di destinazione): ");
-    while(selezione==-1)   
+    printf("Dove vuoi muovere la pedina?\n(seleziona il numero corrispondente alla casella di destinazione): ");
+    while(selezione==-1||selezione>c)   
         scanf("%d",&selezione);
     printf("\n");
-
-    
-    /*Trovo l'indice dello spazio da spostare*/
-            for(i=0;i<field->nblanks;i++){
-                if((field->blanks[i].coord.x==sol[selezione-1].x)&&(field->blanks[i].coord.y==sol[selezione-1].y)){
-                    indexb=i;
-                    break;
-                }
-            }
-    
+    indexb=sol[selezione-1];
     return indexb;
 }
 
@@ -456,10 +570,10 @@ void create_pedine(field_t *field){
         field->pedine[i].in_game=true;
         field->pedine[i].promossa=NO;
     }
-    for(i=0;i<1+NPEDINE/2;i++){
+    for(i=0;i<NPEDINE/2;i++){
         field->pedine[i].colore=WHITE;
     }
-    for(i=1+NPEDINE/2;i<NPEDINE;i++){
+    for(i=NPEDINE/2;i<NPEDINE;i++){
         field->pedine[i].colore=BLACK;
     }
     for(i=0;i<field->rows/2;i++){
@@ -489,7 +603,6 @@ void create_blanks(field_t *field){
         field->blanks[c].coord.x=k;
         k+=2;
         c++;
-        printf("%d%d\n", field->blanks[c-1].coord.y, field->blanks[c-1].coord.x);
     }
 }
 
@@ -541,12 +654,14 @@ void fintomain(){
 }
 
 int main() {
+    enum color a=BLACK,b=BLACK;
     
     field_t field;
     start_game2(&field);
     /*for(i=0;i<NPEDINE;i++){
         printf("Riga %d Colonna %d \n",field.pedine[i].coord.y,field.pedine[i].coord.x);
     }*/
+    
     while(!field.partita.END_OF_PLAY){
         print_field(&field);
         movable(WHITE,&field);
@@ -554,7 +669,7 @@ int main() {
         print_field(&field);
         movable(BLACK,&field);
         sel_pedina(BLACK,&field);
-        print_field(&field);
+        /*info(&field);*/
     }
     free_pedine(&field);
     return 0;
