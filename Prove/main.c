@@ -94,14 +94,19 @@ void print_pedine(field_t *field){
     for(i=0;i<NPEDINE;i++){
         printf("Riga %d Colonna %d Movable %d Altezza ",field->pedine[i].coord.y,field->pedine[i].coord.x,field->pedine[i].is_movable);
             if(field->pedine[i].altezza==SINGLE){
-                printf("SINGLE\n");
+                printf("SINGLE ");
             }else if(field->pedine[i].altezza==TOP){
-                printf("TOP\n");
+                printf("TOP ");
             }else if(field->pedine[i].altezza==BOTTOM){
-                printf("BOTTOM\n");
+                printf("BOTTOM ");
             }else if(field->pedine[i].altezza==CENTER){
-                printf("CENTER\n");  
+                printf("CENTER ");  
             }
+			if(field->pedine[i].in_game){
+				printf("IN GAME\n");
+			}else{
+				printf("NO\n");
+			}
         }
 }
 void info(field_t *field){
@@ -385,7 +390,6 @@ void sel_pedina(enum color colore,field_t *field){
 
 void spostamento_pedine(field_t *field, enum color colore, int index, int indexb){
     coord_t mossa;
-    
     mossa=field->blanks[indexb].coord;
     /*Mi ritorna l'indice dello spazio bianco di destinazione dal quale estraggo le cordinate*/    
     
@@ -711,26 +715,11 @@ void start_game2(field_t *field){
     
 }
 
-void fintomain(){
-    field_t field = start_game();
-    while(!field.partita.END_OF_PLAY){
-        print_field(&field);
-        movable(WHITE,&field);
-        sel_pedina(WHITE,&field);
-        print_field(&field);
-        movable(BLACK,&field);
-        sel_pedina(BLACK,&field);
-        print_field(&field);
-    }
-    free_pedine(&field);
-    
-}
 
 int main() {
     
     field_t field;
     start_game2(&field);
-    
     
     while(!field.partita.END_OF_PLAY){
         print_pedine(&field);
@@ -745,6 +734,7 @@ int main() {
         sel_pedina(BLACK,&field);
         /*info(&field); */
     }
+
     free_pedine(&field);
     return 0;
 }
