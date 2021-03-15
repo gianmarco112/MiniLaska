@@ -703,7 +703,7 @@ int main() {
         print_field(&field);
         movable(BLACK,&field);
         sel_pedina(BLACK,&field);
-        /*info(&field);*/
+        /*info(&field); */
     }
     free_pedine(&field);
     return 0;
