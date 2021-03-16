@@ -1,2 +1,2 @@
-vett: vett1.cpp
-g++ vett1.cpp -c -ovett1.o -std=c++11 -Wall -pedantic
+lists: lists.cpp
+g++ lists.cpp -c -olists.o -std=c++11 -Wall -pedantic
