@@ -78,7 +78,8 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 int coord_to_index(field_t *field, coord_t coord);
 char* coord_to_pedina (field_t *field, coord_t cor);
 int altezza_pedina(field_t *field, coord_t coord);
-void form_tower(field_t *field, coord_t coord,char *sol);
+void stampa_field(field_t *field);
+void coord_to_char(field_t *field, int x, int y, char *ped);
 void endgame(field_t *field);
 void start_game2(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/
@@ -564,23 +565,7 @@ int altezza_pedina(field_t *field, coord_t coord){
     }
     return index;
 }
-/*Mi restituisce un char con la forma della torre*/
-void form_tower(field_t *field, coord_t coord, char *sol){
-    int i;
-    
-    for(i=0;i<NPEDINE;i++){
-        if(field->pedine[i].coord.y == coord.y&&
-            field->pedine[i].coord.x==coord.x){
-                if(field->pedine[i].altezza==TOP){
-                    sol[0]=field->pedine[i].colore;
-                }else if(field->pedine[i].altezza==CENTER){
-                    sol[1]=field->pedine[i].colore;
-                }else if(field->pedine[i].altezza==BOTTOM){
-                    sol[2]=field->pedine[i].colore;
-                }
-            }
-    }
-}
+
 
 
 /*se il player sbaglia pedina o vuole cambiarla*/
@@ -708,28 +693,7 @@ void stampa_field(field_t *field)
     printf("\n");
 }
 
-void print_field(field_t *field){
-     int i,j;
-     char c=' ';
-    printf("    1 2 3 4 5 6 7   \n");
-    for(i=0;i<7;i++){
-        /*printf("  --------------\n");*/
-        if(i%2==0||i==0) {
-            j = 3;
-            printf("%d |",i);
-        }else {
-            j = 4;
-            printf("%d   |",i);
-        }
-        for(;j<7;j++){
 
-            
-            printf(" %c |",c);
-            
-        }
-        printf("\n");
-    }
-}
 
 /*Un prototipo di come dovrebbe essere la print*/
 void print_fieldTEST(){
