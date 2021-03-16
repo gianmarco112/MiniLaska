@@ -587,7 +587,126 @@ void form_tower(field_t *field, coord_t coord, char *sol){
 void ops_sel() {
 
 }
+void coord_to_char(field_t *field, int x, int y, char *ped)
+{
+    int i;
+    bool_t singola = false;
+    for(i=0;i<field->nblanks;i++){
+        if (field->blanks[i].coord.x == x &&
+            field->blanks[i].coord.y == y){
+                ped[0]=' ';
+                ped[1]=' ';
+                ped[2]=' ';
+            }
+    }
+    for (i = 0; i < NPEDINE; i++)
+    {
+        if (field->pedine[i].coord.x == x &&
+            field->pedine[i].coord.y == y &&
+            field->pedine[i].altezza == SINGLE)
+        {
+            singola = true;
+            ped[0]=' ';
+            ped[2]=' ';
+            if (field->pedine[i].colore){
+                if(field->pedine[i].promossa)
+                ped[1] = 'W';
+                else
+                ped[1] = 'w';
+            }else{
+                if(field->pedine[i].promossa)
+                ped[1] = 'B';
+                else
+                ped[1] = 'b';
+            }
+            
+            break;
+        }
+    }
+    if (!singola)
+    {
+        for (i = 0; i < NPEDINE; i++)
+        {
+            if (field->pedine[i].coord.x == x &&
+                field->pedine[i].coord.y == y)
+            {
+                if (field->pedine[i].altezza == TOP)
+                {   
+                    ped[1] = ' ';
+                    if (field->pedine[i].colore)
+                    {
+                        ped[0] = 'w';
+                    }
+                    else
+                    {
+                        ped[0] = 'b';
+                    }
+                }
+                else if (field->pedine[i].altezza == CENTER)
+                {
+                    if (field->pedine[i].colore)
+                    {
+                        ped[1] = 'w';
+                    }
+                    else
+                    {
+                        ped[1] = 'b';
+                    }
+                }
+                else
+                {
+                    if (field->pedine[i].colore)
+                    {
+                        ped[2] = 'w';
+                    }
+                    else
+                    {
+                        ped[2] = 'b';
+                    }
+                }
+                
+            }
+        }
+    }
+}
 
+void stampa_field(field_t *field)
+{
+    int i, j;
+    int x = 1, y = 1;
+    char *ped = malloc(3*sizeof(char));
+    ped[0]='|';
+    ped[1]='|';
+    ped[2]='|';
+    printf("    1 | 2 | 3 | 4 | 5 | 6 | 7   \n");
+    for (i = 0; i < NROWS; i++)
+    {
+        /*Stampo il numero di riga e la spaziatura*/
+        if (i % 2 == 0 ||i==0)
+        {
+            printf("%d |", i + 1);
+        }
+        else
+        {
+            printf("%d |", i + 1);
+            
+        }
+        
+        
+            for (j=0; j < NCOLS; j++)
+            {
+                coord_to_char(field, j+1, i+1, ped);
+                printf("%s|",ped);
+                ped[0]='|';
+                ped[1]='|';
+                ped[2]='|';
+                
+            }
+        
+        printf("\n");
+    }
+    printf("\n");
+}
 
 void print_field(field_t *field){
      int i,j;
@@ -722,14 +841,14 @@ int main() {
     start_game2(&field);
     
     while(!field.partita.END_OF_PLAY){
-        print_pedine(&field);
-        print_field(&field);
+        
+        stampa_field(&field);
         movable(WHITE,&field);
         if(field.partita.END_OF_PLAY)
             break;
         sel_pedina(WHITE,&field);
-        print_pedine(&field);
-        print_field(&field);
+        
+        stampa_field(&field);
         movable(BLACK,&field);
         sel_pedina(BLACK,&field);
         /*info(&field); */
