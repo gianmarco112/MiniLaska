@@ -1,5 +1,5 @@
 /**
- * @file main.c
+ * @file Minilaska.c
  * @author Gianmarco Perini (883492@stud.unive.it)
  * @brief Mini Laska con interfaccia da terminale
  * @version 0.1

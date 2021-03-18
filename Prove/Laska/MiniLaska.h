@@ -1,8 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#define NPEDINE (22)
-#define NROWS (7)
-#define NCOLS (7)
 
 typedef struct field field_t;
 
