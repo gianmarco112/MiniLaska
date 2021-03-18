@@ -17,8 +17,6 @@
 
 typedef struct field field_t;
 
-
-
 typedef enum bool{
     TRUE=1,
     FALSE=0
@@ -49,10 +47,7 @@ typedef struct coord{
 struct blanks{
     coord_t coord;
 };
-/**
- * @brief 
- * @struct 
- */
+
 typedef struct pedina{
     enum color colore;
     struct coord coord;

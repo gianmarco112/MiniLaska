@@ -3,7 +3,7 @@ typedef struct field field_t;
 
 typedef enum bools bool_t;
 
-enum bools{
+typedef enum bools{
     TRUE=1,
     FALSE=0
 };
@@ -67,18 +67,9 @@ struct field{
 
 /*LISTA DELLE FUNZIONI*/
 void sel_pedina(enum color colore,field_t *field);
-int possible_moves(enum color colore, field_t *field,int index);
-void create_pedine(field_t *field);
-void create_blanks(field_t *field);
 void movable(enum color colore, field_t *field);
-void obbligata(field_t *field,int index, enum color colore);
-void promossa(field_t *field,int index);
-void spostamento_pedine(field_t *field, enum color colore, int index, int indexb);
-int coord_to_index(field_t *field, coord_t coord);
-char* coord_to_pedina (field_t *field, coord_t cor);
-int altezza_pedina(field_t *field, coord_t coord);
 void stampa_field(field_t *field);
-void coord_to_char(field_t *field, int x, int y, char *ped);
 void endgame(field_t *field);
 void start_game2(field_t *field);
+void free_pedine(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/
