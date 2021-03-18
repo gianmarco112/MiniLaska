@@ -1,9 +1,9 @@
 /**
  * @file main.c
- * @author Gianmarco Perini (you@domain.com)
+ * @author Gianmarco Perini (883492@stud.unive.it)
  * @brief Mini Laska con interfaccia da terminale
  * @version 0.1
- * @date 2021-03-16
+ * @date 16-03-2021
  * 
  * @copyright Copyright (c) 2021
  * 
@@ -106,7 +106,7 @@ void endgame(field_t *field){
 
 }
 /**
- * @brief 
+ * @brief Per scopi di debug stampa posizione, il parametro movable e altezza di tutte le pedine
  * 
  * @param field 
  */
@@ -131,7 +131,7 @@ void print_pedine(field_t *field){
         }
 }
 /**
- * @brief 
+ * @brief Per scopi di debug date delle coordinate mi restituisce l'indice della pedina in quel punto e il colore
  * 
  * @param field 
  */
@@ -160,7 +160,7 @@ void info(field_t *field){
 
 /**
  * @brief Funzione che controlla se le varie pedine si possono muovere e ne modifica il parametro
- * 
+ *        Function responsable for checking each pawn if it can move and it updates the corresponding parameter
  * @param colore 
  * @param field 
  */
@@ -209,7 +209,7 @@ void movable(enum color colore, field_t *field){
 
 /**
  * @brief Funzione che data una pedina mi restituisce se essa è obbligata a mangiare o meno
- * 
+ *        Function that checks if a pawn must move and eat the opponent and updates the corresponding parameter
  * @param field 
  * @param index 
  * @param colore 
@@ -283,8 +283,8 @@ void obbligata(field_t *field,int index, enum color colore){
     
 }
 /**
- * @brief 
- * 
+ * @brief Funzione che controlla se una pedina ha raggiunto il lato opposto del campo e deve essere promossa, ne modifica quindi il parametro
+ *        Funciotn that checks if a pawn has reached the opposite first line and if so, it updates the corresponding parameter
  * @param field 
  * @param index 
  */
@@ -296,8 +296,9 @@ void promossa(field_t *field,int index){
     }
 }
 /**
- * @brief prende in input il colore del giocatore, il campo di gioco e l'indice della pedina da muovere e print le possibili mosse di quella pedina
+ * @brief Prende in input il colore del giocatore, il campo di gioco e l'indice della pedina da muovere e print le possibili mosse di quella pedina
  * Viene chiamata dalla funzione sel_pedina
+ *        Funcion called next to sel_pedina responsable for displaying the possible moves that the pawn corresponding to the index is capable of
  * @param colore 
  * @param field 
  * @param index 
@@ -382,8 +383,7 @@ int possible_moves(enum color colore, field_t *field,int index){
 
 
 /**
- * @brief function responsable of looking for movable pedine or mangiate obbligatorie 
- *         and it prints the list of available ones
+ * @brief function responsable of looking for movable pedine or obliged eats and it prints the list of available ones
  * 
  * @param colore 
  * @param field 
@@ -446,7 +446,7 @@ void sel_pedina(enum color colore,field_t *field){
 
 /**
  * @brief Funzione che si occupa di gestire lo spostamento delle pedine dopo la selezione della mossa
- * 
+ *        Funcion responsable for swapping pawns after the user/computer selection
  * @param field 
  * @param colore 
  * @param index 
@@ -587,7 +587,7 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 
 /**
  * @brief Date le cordinate mi restituisce un char corrispondente alla struttura della pedina in quela casella
- * 
+ *        Funcion that given a set of coordinates gives back the char vector with the list of pawns for the print funcion
  * @param field 
  * @param cor 
  * @return char* 
@@ -611,7 +611,7 @@ char* coord_to_pedina (field_t *field, coord_t cor){
 
 /**
  * @brief Date le cordinate restituisce l'indice della pedina in quel punto, torna -1 se non ci sono pedine
- * 
+ *        Given a set of coordinates gives back the index of the pawn that sits in that spot, otherwise it gives back -1 if none
  * @param field 
  * @param coord 
  * @return int 
@@ -632,7 +632,7 @@ int coord_to_index(field_t *field, coord_t coord){
 
 /**
  * @brief Date le cordinate mi restituisce l'altezza della pedina 
- * 
+ *        
  * @param field 
  * @param coord 
  * @return int 
@@ -657,7 +657,7 @@ void ops_sel() {
 }
 /**
  * @brief Date delle cordinate mi restituisce un char che serve per la print del campo di gioco
- * 
+ *         
  * @param field 
  * @param x 
  * @param y 
