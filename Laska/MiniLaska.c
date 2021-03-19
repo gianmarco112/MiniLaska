@@ -680,14 +680,14 @@ void coord_to_char(field_t *field, int x, int y, char *ped)
             ped[2]=' ';
             if (field->pedine[i].colore){
                 if(field->pedine[i].promossa)
-                ped[1] = 'W';
-                else
-                ped[1] = 'w';
-            }else{
-                if(field->pedine[i].promossa)
                 ped[1] = 'B';
                 else
                 ped[1] = 'b';
+            }else{
+                if(field->pedine[i].promossa)
+                ped[1] = 'N';
+                else
+                ped[1] = 'n';
             }
             
             break;
@@ -700,22 +700,22 @@ void coord_to_char(field_t *field, int x, int y, char *ped)
                 if (field->pedine[i].altezza == TOP){   
                     ped[1] = ' ';
                     if (field->pedine[i].colore){
-                        ped[0] = 'w';
-                    }else{
                         ped[0] = 'b';
+                    }else{
+                        ped[0] = 'n';
                     }
                 }
                 else if (field->pedine[i].altezza == CENTER){
                     if (field->pedine[i].colore){
-                        ped[1] = 'w';
-                    }else{
                         ped[1] = 'b';
+                    }else{
+                        ped[1] = 'n';
                     }
                 }else{
                     if (field->pedine[i].colore){
-                        ped[2] = 'w';
-                    }else{
                         ped[2] = 'b';
+                    }else{
+                        ped[2] = 'n';
                     }
                 }
                 
