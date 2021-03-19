@@ -735,15 +735,44 @@ void stampa_field(field_t *field){
     ped[0]='|';
     ped[1]='|';
     ped[2]='|';
-    printf("    1 | 2 | 3 | 4 | 5 | 6 | 7   \n");
+    printf("  |  1  |  2  |  3  |  4  |  5  |  6  |  7  | \n");
+    printf("  ------------------------------------------- \n");
     for (i = 0; i < NROWS; i++){
         /*Stampo il numero di riga e la spaziatura*/
+        printf("   |");
+        for (j=0; j < NCOLS; j++){//Solo pedine TOP
+            coord_to_char(field, j+1, i+1, ped);
+            if(ped='|||'){
+                printf("||||||");
+            }else{
+                printf("  %s  |",ped[0]);
+            }
+            ped[0]='|';
+            ped[1]='|';
+            ped[2]='|';
+        }
+        printf("\n");
         printf("%d |", i + 1);  
+        for (j=0; j < NCOLS; j++){//Solo pedine TOP
+            coord_to_char(field, j+1, i+1, ped);
+            if(ped='|||'){
+                printf("||||||");
+            }else{
+            printf("  %s  |",ped[1]);
+            }
+            ped[0]='|';
+            ped[1]='|';
+            ped[2]='|';
+        }
+        printf("   |");
         
-        int temp=i;
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
-            printf("%s|",ped);
+            if(ped='|||'){
+                printf("||||||");
+            }else{
+            printf("  %s  |",ped[2]);
+            }
             ped[0]='|';
             ped[1]='|';
             ped[2]='|';
@@ -754,7 +783,25 @@ void stampa_field(field_t *field){
     printf("\n");
 }
 
-
+/*    
+  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
+  -------------------------------------------
+  |     |||||||     |||||||     |||||||  w  |
+1 |  w  |||||||  w  |||||||  W  |||||||  w  |
+  |     |||||||     |||||||     |||||||  b  |
+  |||||||     |||||||     |||||||     |||||||
+2 |||||||  w  |||||||  w  |||||||  w  |||||||
+  |||||||     |||||||     |||||||     |||||||
+  |     |||||||     |||||||     |||||||     |
+3 |  w  |||||||  w  |||||||  w  |||||||  w  |
+  |     |||||||     |||||||     |||||||     |
+  |||||||     |||||||     |||||       |||||||
+4 |||||||     |||||||     |||||       |||||||
+  |||||||     |||||||     |||||       |||||||
+5 | b ||||| b ||||| b ||||| b |
+6 ||||| b ||||| b ||||| b |||||
+7 | b ||||| b ||||| b ||||| b |
+*/
 
 /*Un prototipo di come dovrebbe essere la print*/
 void print_fieldTEST(){
