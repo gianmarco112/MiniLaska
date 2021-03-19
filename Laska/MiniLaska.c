@@ -402,7 +402,7 @@ void sel_pedina(enum color colore,field_t *field){
         if(field->pedine[i].is_obbligata){
             sol[c]=i;
             c++;
-            printf("%d: %d%d Obbligata\n",c,field->pedine[i].coord.y,field->pedine[i].coord.x);
+            printf("%d: Riga %d Colonna %d Obbligata a mangiare\n",c,field->pedine[i].coord.y,field->pedine[i].coord.x);
             control=TRUE;
         }
     }  
@@ -412,7 +412,7 @@ void sel_pedina(enum color colore,field_t *field){
             if(field->pedine[i].is_movable){
                 sol[c]=i;
                 c++;
-                printf("%d: %d%d \n",c,field->pedine[i].coord.y,field->pedine[i].coord.x);
+                printf("%d: Riga %d Colonna %d \n",c,field->pedine[i].coord.y,field->pedine[i].coord.x);
             }
         }
     }
