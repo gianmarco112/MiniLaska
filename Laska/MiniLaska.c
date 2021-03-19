@@ -742,7 +742,7 @@ void stampa_field(field_t *field){
         printf("   |");
         for (j=0; j < NCOLS; j++){//Solo pedine TOP
             coord_to_char(field, j+1, i+1, ped);
-            if(ped='|||'){
+            if(ped=='|||'){
                 printf("||||||");
             }else{
                 printf("  %s  |",ped[0]);
@@ -753,9 +753,9 @@ void stampa_field(field_t *field){
         }
         printf("\n");
         printf("%d |", i + 1);  
-        for (j=0; j < NCOLS; j++){//Solo pedine TOP
+        for (j=0; j < NCOLS; j++){/*Solo pedine TOP*/
             coord_to_char(field, j+1, i+1, ped);
-            if(ped='|||'){
+            if(ped=='|||'){
                 printf("||||||");
             }else{
             printf("  %s  |",ped[1]);
@@ -768,7 +768,7 @@ void stampa_field(field_t *field){
         
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
-            if(ped='|||'){
+            if(ped=='|||'){
                 printf("||||||");
             }else{
             printf("  %s  |",ped[2]);
