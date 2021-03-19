@@ -739,7 +739,7 @@ void stampa_field(field_t *field){
     printf("  ------------------------------------------- \n");
     for (i = 0; i < NROWS; i++){
         /*Stampo il numero di riga e la spaziatura*/
-        printf("   |");
+        printf("  |");
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
             if(ped[1]=='|'){
@@ -764,7 +764,7 @@ void stampa_field(field_t *field){
             ped[1]='|';
             ped[2]='|';
         }
-        
+        printf("  |");
         printf("\n");
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
