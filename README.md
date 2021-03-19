@@ -1,5 +1,3 @@
 ## My Readme
-This is my readme
-Provaa
+Progetto unive Introduzione alla programmazione
 author: **Gianmarco Perini**
-vsc
