@@ -594,7 +594,7 @@ char* coord_to_pedina (field_t *field, coord_t cor){
     if(field->pedine[index].altezza==SINGLE)
         sol[1]=field->pedine[index].colore;
     else if(field->pedine[index].altezza==TOP){
-        form_tower(field, cor,sol);
+       
     }
     return sol;
 }

@@ -3,7 +3,7 @@ typedef struct field field_t;
 
 typedef enum bools bool_t;
 
-typedef enum bools{
+enum bools{
     TRUE=1,
     FALSE=0
 };
