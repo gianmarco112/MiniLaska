@@ -43,6 +43,10 @@ typedef struct coord{
     int x,y;
 }coord_t;
 
+typedef struct pair_int{
+    int score;
+    int indexb;
+}pair_t;
 
 struct blanks{
     coord_t coord;
@@ -724,6 +728,105 @@ void coord_to_char(field_t *field, int x, int y, char *ped)
         }
     }
 }
+/*
+typedef struct pair_int{
+    int score;
+    int indexb;
+}pair_t;
+*/
+
+pair_t cpu_strategy(field_t *field,int index, int depth){
+    pair_t res;
+    int col=-1,i;
+    if (depth==0){
+        res.score = 0;
+        res.indexb = 0;
+        return res;
+    }
+    if(field->pedine[index].is_obbligata){
+	int i,j,inizio,fine;
+    inizio=0;
+    fine=NPEDINE/2;
+    for(i=inizio;i<fine;i++){
+        /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
+        if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
+            /*Controllo quale o quali pedina/e devo mangiare*/
+            if(field->pedine[i].coord.y == field->pedine[index].coord.y+col/*Deve essere nella riga successiva*/){
+                if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){/*Cerco in una diagonale*/
+                    /*Cerco gli spazi di destinazione della mia pedina*/
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
+                        /*TODO                        */inizio=1;
+                        }
+                    }
+                }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
+                    /*Cerco gli spazi di destinazione della mia pedina*/
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
+                        /*TODO              */inizio=1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /*Se non ho mosse obbligatorie controllo le mosse di una casella in diagonale*/
+    }else{
+        for(i=0;i<field->nblanks;i++){
+            if(field->blanks[i].coord.y==field->pedine[index].coord.y+col&&(
+                    field->blanks[i].coord.x==field->pedine[index].coord.x+1|| 
+                    field->blanks[i].coord.x==field->pedine[index].coord.x-1)) {
+                    /*TODO                        */i=1;
+                }
+            }
+        }
+    
+}
+
+void cpu_turn(field_t *field){
+    int index, indexb,i, k=0;
+    field_t campo=*field;
+    int inizio,fine;
+    bool_t control=FALSE;
+    int sol[20];
+    pair_t max[NPEDINE/2];
+    int c=0;
+    inizio=NPEDINE/2;
+    fine=NPEDINE;
+    /*Prima controllo se ho la possibilità di mangiare una pedina*/
+    for(i=inizio;i<fine;i++){
+        if(field->pedine[i].is_obbligata){
+            sol[c]=i;
+            c++;
+            max[k]=cpu_strategy(&campo, i,3);
+            k++;
+            control=TRUE;
+        }
+    }  
+        /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
+    if(!control){
+        for(i=inizio;i<fine;i++){
+            if(field->pedine[i].is_movable){
+                sol[c]=i;
+                c++;
+                max[k]=cpu_strategy(&campo, i,3);
+                k++;
+            }
+        }
+    }
+    spostamento_pedine(field, BLACK, index, indexb);
+}
+
+
+
+
+
+
+
+
 /**
  * @brief Funzione di stampa del campo
  * 
