@@ -45,6 +45,7 @@ typedef struct coord{
 
 typedef struct pair_int{
     int score;
+    int index;
     int indexb;
 }pair_t;
 
@@ -734,15 +735,53 @@ typedef struct pair_int{
     int indexb;
 }pair_t;
 */
-
+int n_pedine(field_t *field, enum color colore){
+    int inizio,fine, i;
+    int num;
+    if(colore){
+        inizio=0;
+        fine=NPEDINE/2;
+    }else{
+        inizio=NPEDINE/2;
+        fine=NPEDINE;
+    }
+    for(i=inizio;i<fine;i++){
+        if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP&&
+        field->pedine[i].in_game)
+        num++;
+    }
+    return num;
+}
+int n_pedine(field_t *field, enum color colore){
+    int inizio,fine, i;
+    int num;
+    if(colore){
+        inizio=0;
+        fine=NPEDINE/2;
+    }else{
+        inizio=NPEDINE/2;
+        fine=NPEDINE;
+    }
+    for(i=inizio;i<fine;i++){
+        if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP&&
+        field->pedine[i].in_game&&field->pedine[i].promossa)
+        num++;
+    }
+    return num;
+}
 pair_t cpu_strategy(field_t *field,int index, int depth){
     pair_t res;
-    int col=-1,i;
+    pair_t sol;
+    int i,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2;
     if (depth==0){
         res.score = 0;
         res.indexb = 0;
         return res;
     }
+    npedine1=n_pedine(field,BLACK);
+    npedineAvv1=n_pedine(field,WHITE);
+    npromosse1=n_promosse(field,BLACK);
+    npromosseAvv1=n_promosse(field,WHITE);
     if(field->pedine[index].is_obbligata){
 	int i,j,inizio,fine;
     inizio=0;
@@ -751,11 +790,11 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
         /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
         if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
             /*Controllo quale o quali pedina/e devo mangiare*/
-            if(field->pedine[i].coord.y == field->pedine[index].coord.y+col/*Deve essere nella riga successiva*/){
+            if(field->pedine[i].coord.y == field->pedine[index].coord.y-1/*Deve essere nella riga successiva*/){
                 if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){/*Cerco in una diagonale*/
                     /*Cerco gli spazi di destinazione della mia pedina*/
                     for(j=0;j<field->nblanks;j++){
-                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y-2 &&
                         (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
                         /*TODO                        */inizio=1;
                         }
@@ -763,9 +802,10 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
                 }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
                     /*Cerco gli spazi di destinazione della mia pedina*/
                     for(j=0;j<field->nblanks;j++){
-                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y-2 &&
                         (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
-                        /*TODO              */inizio=1;
+                        /*TODO              */
+                        res=cpu_pedina(field,depth-1);
                         }
                     }
                 }
@@ -776,19 +816,32 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
     /*Se non ho mosse obbligatorie controllo le mosse di una casella in diagonale*/
     }else{
         for(i=0;i<field->nblanks;i++){
-            if(field->blanks[i].coord.y==field->pedine[index].coord.y+col&&(
+            if(field->blanks[i].coord.y==field->pedine[index].coord.y-1&&(
                     field->blanks[i].coord.x==field->pedine[index].coord.x+1|| 
                     field->blanks[i].coord.x==field->pedine[index].coord.x-1)) {
-                    /*TODO                        */i=1;
+                    /*TODO                        */
+                    res=cpu_pedina(field, depth-1);
+                    
                 }
             }
         }
-    
+    sol.index=index;
+    sol.score=res.score;
+    if(npedine1<npedine2)sol.score++;
+    else if(npedine1>npedine2)sol.score--;
+    if(npedineAvv1>npedineAvv2)sol.score++;
+    else if(npedineAvv1<npedineAvv2)sol.score--;
+    if(npromosse1<npromosse2)sol.score++;
+    else if(npromosse1>npromosse2)sol.score--;
+    if(npromosseAvv1>npromosseAvv2)sol.score++;
+    else if(npromosseAvv1< npromosseAvv2)sol.score--;
+    return sol;
 }
 
-void cpu_turn(field_t *field){
+
+
+pair_t cpu_pedina(field_t *field,int depth){
     int index, indexb,i, k=0;
-    field_t campo=*field;
     int inizio,fine;
     bool_t control=FALSE;
     int sol[20];
@@ -801,7 +854,7 @@ void cpu_turn(field_t *field){
         if(field->pedine[i].is_obbligata){
             sol[c]=i;
             c++;
-            max[k]=cpu_strategy(&campo, i,3);
+            max[k]=cpu_strategy(field, i,depth-1);
             k++;
             control=TRUE;
         }
@@ -812,14 +865,19 @@ void cpu_turn(field_t *field){
             if(field->pedine[i].is_movable){
                 sol[c]=i;
                 c++;
-                max[k]=cpu_strategy(&campo, i,3);
+                max[k]=cpu_strategy(field, i,depth-1);
                 k++;
             }
         }
     }
+    
+}
+void cpu_turn(field_t *field){
+    field_t campo=*field;
+    int index,indexb;
+    cpu_pedina(&campo,4);
     spostamento_pedine(field, BLACK, index, indexb);
 }
-
 
 
 
@@ -889,25 +947,7 @@ void stampa_field(field_t *field){
     printf("\n");
 }
 
-/*    
-  |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
-  -------------------------------------------
-  |     |||||||     |||||||     |||||||  w  |
-1 |  w  |||||||  w  |||||||  W  |||||||  w  |
-  |     |||||||     |||||||     |||||||  b  |
-  |||||||     |||||||     |||||||     |||||||
-2 |||||||  w  |||||||  w  |||||||  w  |||||||
-  |||||||     |||||||     |||||||     |||||||
-  |     |||||||     |||||||     |||||||     |
-3 |  w  |||||||  w  |||||||  w  |||||||  w  |
-  |     |||||||     |||||||     |||||||     |
-  |||||||     |||||||     |||||       |||||||
-4 |||||||     |||||||     |||||       |||||||
-  |||||||     |||||||     |||||       |||||||
-5 | b ||||| b ||||| b ||||| b |
-6 ||||| b ||||| b ||||| b |||||
-7 | b ||||| b ||||| b ||||| b |
-*/
+
 /*
   |  1  |  2  |  3  |  4  |  5  |  6  |  7  |
   -------------------------------------------
