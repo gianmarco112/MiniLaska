@@ -738,36 +738,18 @@ void stampa_field(field_t *field){
     printf("    1 | 2 | 3 | 4 | 5 | 6 | 7   \n");
     for (i = 0; i < NROWS; i++){
         /*Stampo il numero di riga e la spaziatura*/
-        if (i % 2 == 0 ||i==0){
-            printf("%d |", i + 1);
-        }else{
-            printf("%d |", i + 1);  
-        }
+        printf("%d |", i + 1);  
+        
         int temp=i;
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
-            printf("%s|",ped[0]);
+            printf("%s|",ped);
             ped[0]='|';
-             
-        }
-        printf("\n");
-        i=temp;
-        for (j=0; j < NCOLS; j++){
-            coord_to_char(field, j+1, i+1, ped);
-            printf("%s|",ped[1]);
-           
             ped[1]='|';
-             
+            ped[2]='|';
         }
         printf("\n");
-        i=temp;
-        for (j=0; j < NCOLS; j++){
-            coord_to_char(field, j+1, i+1, ped);
-            printf("%s|",ped[2]);
-            
-            ped[2]='|'; 
-        }
-        printf("\n");
+        
     }
     printf("\n");
 }
