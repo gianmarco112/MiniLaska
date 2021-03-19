@@ -781,7 +781,6 @@ void stampa_field(field_t *field){
         printf("\n");
         
     }
-    printf("\n");
     printf("  ------------------------------------------- \n");
 }
 
