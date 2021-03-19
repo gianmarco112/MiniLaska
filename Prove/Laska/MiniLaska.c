@@ -100,6 +100,7 @@ int min(int a,int b){if(a<b)return a;else return b;}
 void endgame(field_t *field){
 
 }
+
 /**
  * @brief Per scopi di debug stampa posizione, il parametro movable e altezza di tutte le pedine
  * 
@@ -744,9 +745,23 @@ void stampa_field(field_t *field){
         }
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
-            printf("%s|",ped);
+            printf("%s|",ped[0]);
             ped[0]='|';
+             
+        }
+        printf("\n");
+        for (j=0; j < NCOLS; j++){
+            coord_to_char(field, j+1, i+1, ped);
+            printf("%s|",ped[1]);
+           
             ped[1]='|';
+             
+        }
+        printf("\n");
+        for (j=0; j < NCOLS; j++){
+            coord_to_char(field, j+1, i+1, ped);
+            printf("%s|",ped[2]);
+            
             ped[2]='|'; 
         }
         printf("\n");
