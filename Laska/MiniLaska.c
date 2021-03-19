@@ -421,6 +421,7 @@ void sel_pedina(enum color colore,field_t *field){
             printf("Quale pedina vuoi muovere: ");
                 scanf("%d",&isol);
                 index=sol[isol-1];
+                printf("\n");
             /*Controllo l'input*/
             if(isol>c||isol<1){
                 printf("errore nell'inserimento \n");
