@@ -334,7 +334,7 @@ int possible_moves(enum color colore, field_t *field,int index){
                         (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
                         sol[c]=j;
                         c++;
-                        printf("%d: %d%d\n",c,field->blanks[j].coord.y,field->blanks[j].coord.x);
+                        printf("%d: Riga %d Colonna %d\n",c,field->blanks[j].coord.y,field->blanks[j].coord.x);
                         }
                     }
                 }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
@@ -344,7 +344,7 @@ int possible_moves(enum color colore, field_t *field,int index){
                         (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
                         sol[c]=j;
                         c++;
-                        printf("%d: %d%d\n",c,field->blanks[j].coord.y,field->blanks[j].coord.x);
+                        printf("%d: Riga %d Colonna %d\n",c,field->blanks[j].coord.y,field->blanks[j].coord.x);
                         }
                     }
                 }
@@ -360,7 +360,7 @@ int possible_moves(enum color colore, field_t *field,int index){
                     field->blanks[i].coord.x==field->pedine[index].coord.x-1)) {
                     sol[c]=i;
                     c++;
-                    printf("%d: %d%d\n", c ,field->blanks[i].coord.y, field->blanks[i].coord.x);
+                    printf("%d: Riga %d Colonna %d\n", c ,field->blanks[i].coord.y, field->blanks[i].coord.x);
                 }
             }
         }
