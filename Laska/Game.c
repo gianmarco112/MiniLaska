@@ -3,7 +3,7 @@
 #include "MiniLaska.h"
 
 /*gcc MiniLaska.c -c -oMiniLaska.o -ansi -pedantic*/
-/*gcc Game.c -ansi -pedantic MiniLaska.o*/
+/*gcc Game.c -oLaska -ansi -pedantic MiniLaska.o*/
 int main() {
     
     field_t field;

@@ -743,6 +743,7 @@ void stampa_field(field_t *field){
         }else{
             printf("%d |", i + 1);  
         }
+        int temp=i;
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
             printf("%s|",ped[0]);
@@ -750,6 +751,7 @@ void stampa_field(field_t *field){
              
         }
         printf("\n");
+        i=temp;
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
             printf("%s|",ped[1]);
@@ -758,6 +760,7 @@ void stampa_field(field_t *field){
              
         }
         printf("\n");
+        i=temp;
         for (j=0; j < NCOLS; j++){
             coord_to_char(field, j+1, i+1, ped);
             printf("%s|",ped[2]);
