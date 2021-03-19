@@ -745,7 +745,7 @@ void stampa_field(field_t *field){
             if(ped=='|||'){
                 printf("||||||");
             }else{
-                printf("  %s  |",ped[0]);
+                printf("  %c  |",ped[0]);
             }
             ped[0]='|';
             ped[1]='|';
@@ -758,7 +758,7 @@ void stampa_field(field_t *field){
             if(ped=='|||'){
                 printf("||||||");
             }else{
-            printf("  %s  |",ped[1]);
+            printf("  %c  |",ped[1]);
             }
             ped[0]='|';
             ped[1]='|';
@@ -771,7 +771,7 @@ void stampa_field(field_t *field){
             if(ped=='|||'){
                 printf("||||||");
             }else{
-            printf("  %s  |",ped[2]);
+            printf("  %c  |",ped[2]);
             }
             ped[0]='|';
             ped[1]='|';
