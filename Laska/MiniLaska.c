@@ -368,7 +368,7 @@ int possible_moves(enum color colore, field_t *field,int index){
     if(c==0){
         printf("error \n");
     }
-    printf("Dove vuoi muovere la pedina?");
+    printf("Dove vuoi muovere la pedina? ");
     while(selezione==-1||selezione-1>c)   
         scanf("%d",&selezione);
     printf("\n");
