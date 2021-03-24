@@ -825,7 +825,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         res=cpu_pedina(field,depth-1,turno);
                         for(z=0;z<NPEDINE;z++){
                             field.pedine[z]=copiapedine[z];
-                            if(i<field.nblanks)
+                            if(z<field.nblanks)
                                 field.blanks[z]=copiablanks[z];
                         }
                         res.indexb=j;
@@ -848,7 +848,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         res=cpu_pedina(field,depth-1,turno);
                         for(z=0;z<NPEDINE;z++){
                             field.pedine[z]=copiapedine[z];
-                            if(i<field.nblanks)
+                            if(z<field.nblanks)
                                 field.blanks[z]=copiablanks[z];
                         }
                         res.indexb=j;
@@ -876,7 +876,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                     res=cpu_pedina(field,depth-1,turno);
                     for(z=0;z<NPEDINE;z++){
                             field.pedine[z]=copiapedine[z];
-                            if(i<field.nblanks)
+                            if(z<field.nblanks)
                                 field.blanks[z]=copiablanks[z];
                     }
                     res.indexb=i;
