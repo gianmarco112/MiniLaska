@@ -9,7 +9,7 @@ int main() {
     field_t field;
     start_game2(&field);
     
-    while(!field.partita.END_OF_PLAY){
+    /* while(!field.partita.END_OF_PLAY){
         stampa_field(&field);
         movable(WHITE,&field);
         if(field.partita.END_OF_PLAY)
@@ -17,9 +17,22 @@ int main() {
         sel_pedina(WHITE,&field);
         stampa_field(&field);
         movable(BLACK,&field);
-        sel_pedina(BLACK,&field);
-        /*info(&field); */
-    }
+        sel_pedina(BLACK,&field); 
+    } */
+    /* while(!field.partita.END_OF_PLAY){
+        stampa_field(&field);
+        movable(WHITE,&field);
+        if(field.partita.END_OF_PLAY)
+            break;
+        sel_pedina(WHITE,&field);
+        stampa_field(&field);
+        movable(BLACK,&field);
+        cpu_turn(field);
+        
+    }*/  
+    stampa_field(&field);
+    movable(BLACK,&field);
+    cpu_turn(field);
 
     free_pedine(&field);
     return 0;

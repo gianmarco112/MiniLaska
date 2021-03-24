@@ -93,6 +93,9 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 int coord_to_index(field_t *field, coord_t coord);
 char* coord_to_pedina (field_t *field, coord_t cor);
 int altezza_pedina(field_t *field, coord_t coord);
+pair_t cpu_turn(field_t field);
+pair_t cpu_pedina(field_t *field,int depth,enum color colore);
+pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore);
 void stampa_field(field_t *field);
 void coord_to_char(field_t *field, int x, int y, char *ped);
 void endgame(field_t *field);
@@ -752,7 +755,7 @@ int n_pedine(field_t *field, enum color colore){
     }
     return num;
 }
-int n_pedine(field_t *field, enum color colore){
+/* int n_pedine(field_t *field, enum color colore){
     int inizio,fine, i;
     int num;
     if(colore){
@@ -768,8 +771,8 @@ int n_pedine(field_t *field, enum color colore){
         num++;
     }
     return num;
-}
-pair_t cpu_strategy(field_t *field,int index, int depth){
+} */
+pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore){
     pair_t res;
     pair_t sol;
     int i,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2;
@@ -784,8 +787,13 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
     npromosseAvv1=n_promosse(field,WHITE);
     if(field->pedine[index].is_obbligata){
 	int i,j,inizio,fine;
+    if(!colore){
     inizio=0;
     fine=NPEDINE/2;
+    }else{
+    inizio=NPEDINE/2;
+    fine=NPEDINE;
+    }
     for(i=inizio;i<fine;i++){
         /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
         if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
@@ -797,7 +805,12 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
                         if(field->blanks[j].coord.y==field->pedine[index].coord.y-2 &&
                         (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
                         /*TODO                        */
-                        res=cpu_pedina(field,depth-1);
+                        enum color turno;
+                        spostamento_pedine(field, colore, index, j);/*Una delle possibili mosse*/
+                        if(colore)turno=BLACK;
+                        else turno=WHITE;
+                        res=cpu_pedina(field,depth-1,turno);
+                        res.indexb=j;
                         }
                     }
                 }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
@@ -806,7 +819,13 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
                         if(field->blanks[j].coord.y==field->pedine[index].coord.y-2 &&
                         (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
                         /*TODO              */
-                        res=cpu_pedina(field,depth-1);
+                        enum color turno;
+
+                        spostamento_pedine(field, colore, index, j);/*Una delle possibili mosse*/
+                        if(colore)turno=BLACK;
+                        else turno=WHITE;
+                        res=cpu_pedina(field,depth-1,turno);
+                        res.indexb=j;
                         }
                     }
                 }
@@ -821,13 +840,20 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
                     field->blanks[i].coord.x==field->pedine[index].coord.x+1|| 
                     field->blanks[i].coord.x==field->pedine[index].coord.x-1)) {
                     /*TODO                        */
-                    res=cpu_pedina(field, depth-1);
-                    
+                    enum color turno;
+                    spostamento_pedine(field, colore, index, i);/*Una delle possibili mosse*/
+                    if(colore)turno=BLACK;
+                    else turno=WHITE;
+                    res=cpu_pedina(field,depth-1,turno);
+                    res.indexb=i;
                 }
             }
         }
     sol.index=index;
     sol.score=res.score;
+    sol.indexb=res.indexb;
+
+    /*Assegnamento del punteggio*/
     if(npedine1<npedine2)sol.score++;
     else if(npedine1>npedine2)sol.score--;
     if(npedineAvv1>npedineAvv2)sol.score++;
@@ -836,26 +862,42 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
     else if(npromosse1>npromosse2)sol.score--;
     if(npromosseAvv1>npromosseAvv2)sol.score++;
     else if(npromosseAvv1< npromosseAvv2)sol.score--;
+
+
     return sol;
 }
 
 
 
-pair_t cpu_pedina(field_t *field,int depth){
-    int index, indexb,i, k=0;
-    int inizio,fine;
+pair_t cpu_pedina(field_t *field,int depth,enum color colore){
+    stampa_field(field);
+    int index, indexb,i, k=0,c=0;
+    int inizio,fine,massimo=0, indicemassimo=0;
     bool_t control=FALSE;
-    int sol[20];
+    /* int sol[20]; */
     pair_t max[NPEDINE/2];
-    int c=0;
-    inizio=NPEDINE/2;
-    fine=NPEDINE;
+    if (depth==0){
+        pair_t res;
+        res.score = 0;
+        res.indexb = 0;
+        res.index = -1;
+        return res;
+    }
+    if(!colore){/*Colore nero*/
+        inizio=NPEDINE/2;
+        fine=NPEDINE;
+    }else{
+        inizio=0;
+        fine=NPEDINE/2;
+    }
+    movable(colore,field);
     /*Prima controllo se ho la possibilità di mangiare una pedina*/
     for(i=inizio;i<fine;i++){
         if(field->pedine[i].is_obbligata){
-            sol[c]=i;
-            c++;
-            max[k]=cpu_strategy(field, i,depth-1);
+            /* sol[c]=i;
+            c++; */
+            max[k]=cpu_mossa(field, i,depth,colore);
+            max[k].index=i;
             k++;
             control=TRUE;
         }
@@ -864,22 +906,34 @@ pair_t cpu_pedina(field_t *field,int depth){
     if(!control){
         for(i=inizio;i<fine;i++){
             if(field->pedine[i].is_movable){
-                sol[c]=i;
-                c++;
-                max[k]=cpu_strategy(field, i,depth-1);
+                /* sol[c]=i;
+                c++; */
+                max[k]=cpu_mossa(field, i,depth,colore);
+                max[k].index=i;
                 k++;
             }
         }
     }
+    massimo=max[0].score;
+    for(i=0;i<=k;i++){
+        if(max[i].score>massimo){
+            massimo=max[i].score;
+            indicemassimo = i;
+        }
+    }
+    return max[indicemassimo];
     
 }
-void cpu_turn(field_t *field){
-    field_t campo=*field;
-    int index,indexb;
-    cpu_pedina(&campo,4);
-    spostamento_pedine(field, BLACK, index, indexb);
+pair_t cpu_turn(field_t field){
+    return cpu_pedina(&field,4,BLACK);
 }
-
+/*
+typedef struct pair_int{
+    int score;
+    int index;
+    int indexb;
+}pair_t;
+*/
 
 
 

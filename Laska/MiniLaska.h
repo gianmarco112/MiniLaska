@@ -63,7 +63,10 @@ struct field{
     unsigned char nblanks;
     struct play partita;
 };
-
+typedef struct pair_int{
+    int score;
+    int indexb;
+}pair_t;
 
 /*LISTA DELLE FUNZIONI*/
 void sel_pedina(enum color colore,field_t *field);
@@ -72,4 +75,7 @@ void stampa_field(field_t *field);
 void endgame(field_t *field);
 void start_game2(field_t *field);
 void free_pedine(field_t *field);
+pair_t cpu_turn(field_t field);
+pair_t cpu_pedina(field_t *field,int depth,enum color colore);
+pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore);
 /*FINE LISTA DELLE FUNZIONI*/
