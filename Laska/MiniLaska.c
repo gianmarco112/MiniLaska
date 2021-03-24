@@ -896,6 +896,9 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
     int index, indexb,i, k=0,c=0;
     int inizio,fine,massimo=0, indicemassimo=0;
     stampa_field(&field);
+    printf("\n");
+    printf("%d",depth);
+    printf("\n");
     bool_t control=FALSE;
     /* int sol[20]; */
     pair_t max[NPEDINE/2];
