@@ -819,6 +819,9 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         spostamento_pedine(&field, colore, index, j);/*Una delle possibili mosse*/
                         if(colore)turno=BLACK;
                         else turno=WHITE;
+                        printf("\n");
+                        printf(" mossa \n");
+                        printf("\n");
                         res=cpu_pedina(field,depth-1,turno);
                         for(z=0;z<NPEDINE;z++){
                             field.pedine[z]=copiapedine[z];
@@ -839,6 +842,9 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         spostamento_pedine(&field, colore, index, j);/*Una delle possibili mosse*/
                         if(colore)turno=BLACK;
                         else turno=WHITE;
+                        printf("\n");
+                        printf(" mossa \n");
+                        printf("\n");
                         res=cpu_pedina(field,depth-1,turno);
                         for(z=0;z<NPEDINE;z++){
                             field.pedine[z]=copiapedine[z];
@@ -901,7 +907,7 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
     
     int index, indexb,i, k=0,c=0;
     int inizio,fine,massimo=0, indicemassimo=0;
-    stampa_field(&field);
+    /*stampa_field(&field);*/
     printf("\n");
     printf("%d",depth);
     printf("\n");
