@@ -796,7 +796,8 @@ pair_t cpu_strategy(field_t *field,int index, int depth){
                     for(j=0;j<field->nblanks;j++){
                         if(field->blanks[j].coord.y==field->pedine[index].coord.y-2 &&
                         (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
-                        /*TODO                        */inizio=1;
+                        /*TODO                        */
+                        res=cpu_pedina(field,depth-1);
                         }
                     }
                 }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
