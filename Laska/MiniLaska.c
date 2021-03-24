@@ -820,7 +820,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         if(!colore)turno=WHITE;
                         else turno=BLACK;
                         printf("\n");
-                        printf(" mossa %d \n",colore);
+                        printf(" mossa %d \n",turno);
                         printf("\n");
                         res=cpu_pedina(field,depth-1,turno);
                         for(z=0;z<NPEDINE;z++){
@@ -843,7 +843,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         if(!colore)turno=WHITE;
                         else turno=BLACK;
                         printf("\n");
-                        printf(" mossa %d \n",colore);
+                        printf(" mossa %d \n",turno);
                         printf("\n");
                         res=cpu_pedina(field,depth-1,turno);
                         for(z=0;z<NPEDINE;z++){
@@ -871,7 +871,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                     if(!colore)turno=WHITE;
                     else turno=BLACK;
                     printf("\n");
-                    printf(" mossa %d \n",colore);
+                    printf(" mossa %d \n",turno);
                     printf("\n");
                     res=cpu_pedina(field,depth-1,turno);
                     for(z=0;z<NPEDINE;z++){
