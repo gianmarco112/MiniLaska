@@ -76,6 +76,4 @@ void endgame(field_t *field);
 void start_game2(field_t *field);
 void free_pedine(field_t *field);
 pair_t cpu_turn(field_t field);
-pair_t cpu_pedina(field_t *field,int depth,enum color colore);
-pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore);
 /*FINE LISTA DELLE FUNZIONI*/
