@@ -778,6 +778,9 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
     int i,z,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2;
     pedina_t* copiapedine = (pedina_t*)malloc(sizeof(pedina_t)*NPEDINE);
     blanks_t* copiablanks = (blanks_t*)malloc(sizeof(blanks_t)*field.nblanks);
+    printf("\n");
+    printf("%d",depth);
+    printf("\n");
     if (depth==0){
         res.score = 0;
         res.indexb = 0;
