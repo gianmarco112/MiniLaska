@@ -755,7 +755,7 @@ int n_pedine(field_t *field, enum color colore){
     }
     return num;
 }
-/* int n_pedine(field_t *field, enum color colore){
+int n_promosse(field_t *field, enum color colore){
     int inizio,fine, i;
     int num;
     if(colore){
@@ -771,7 +771,7 @@ int n_pedine(field_t *field, enum color colore){
         num++;
     }
     return num;
-} */
+} 
 pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore){
     pair_t res;
     pair_t sol;
@@ -870,9 +870,10 @@ pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore){
 
 
 pair_t cpu_pedina(field_t *field,int depth,enum color colore){
-    stampa_field(field);
+    
     int index, indexb,i, k=0,c=0;
     int inizio,fine,massimo=0, indicemassimo=0;
+    stampa_field(field);
     bool_t control=FALSE;
     /* int sol[20]; */
     pair_t max[NPEDINE/2];
