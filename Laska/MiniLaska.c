@@ -49,9 +49,9 @@ typedef struct pair_int{
     int indexb;
 }pair_t;
 
-struct blanks{
+typedef struct blanks{
     coord_t coord;
-};
+}blanks_t;
 
 typedef struct pedina{
     enum color colore;
@@ -775,18 +775,25 @@ int n_promosse(field_t *field, enum color colore){
 pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
     pair_t res;
     pair_t sol;
-    int i,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2;
+    int i,z,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2;
+    pedina_t* copiapedine = (pedina_t*)malloc(sizeof(pedina_t)*NPEDINE);
+    blanks_t* copiablanks = (blanks_t*)malloc(sizeof(blanks_t)*field.nblanks);
     if (depth==0){
         res.score = 0;
         res.indexb = 0;
         return res;
+    }
+    for(i=0;i<NPEDINE;i++){
+        copiapedine[i]=field.pedine[i];
+        if(i<field.nblanks)
+            copiablanks[i]=field.blanks[i];
     }
     npedine1=n_pedine(&field,BLACK);
     npedineAvv1=n_pedine(&field,WHITE);
     npromosse1=n_promosse(&field,BLACK);
     npromosseAvv1=n_promosse(&field,WHITE);
     if(field.pedine[index].is_obbligata){
-	int i,j,inizio,fine;
+	int j,inizio,fine;
     if(!colore){
     inizio=0;
     fine=NPEDINE/2;
@@ -810,6 +817,11 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         if(colore)turno=BLACK;
                         else turno=WHITE;
                         res=cpu_pedina(field,depth-1,turno);
+                        for(z=0;z<NPEDINE;z++){
+                            field.pedine[z]=copiapedine[z];
+                            if(i<field.nblanks)
+                                field.blanks[z]=copiablanks[z];
+                        }
                         res.indexb=j;
                         }
                     }
@@ -825,6 +837,11 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         if(colore)turno=BLACK;
                         else turno=WHITE;
                         res=cpu_pedina(field,depth-1,turno);
+                        for(z=0;z<NPEDINE;z++){
+                            field.pedine[z]=copiapedine[z];
+                            if(i<field.nblanks)
+                                field.blanks[z]=copiablanks[z];
+                        }
                         res.indexb=j;
                         }
                     }
@@ -845,6 +862,11 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                     if(colore)turno=BLACK;
                     else turno=WHITE;
                     res=cpu_pedina(field,depth-1,turno);
+                    for(z=0;z<NPEDINE;z++){
+                            field.pedine[z]=copiapedine[z];
+                            if(i<field.nblanks)
+                                field.blanks[z]=copiablanks[z];
+                    }
                     res.indexb=i;
                 }
             }
