@@ -31,9 +31,8 @@ int main() {
         
     }*/  
     stampa_field(&field);
-    movable(BLACK,&field);
     cpu_turn(field);
-
+    stampa_field(&field);
     free_pedine(&field);
     return 0;
 }

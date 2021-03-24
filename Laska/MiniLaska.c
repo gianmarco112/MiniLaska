@@ -926,7 +926,7 @@ pair_t cpu_pedina(field_t *field,int depth,enum color colore){
     
 }
 pair_t cpu_turn(field_t field){
-    return cpu_pedina(&field,4,BLACK);
+    return cpu_pedina(&field,10,BLACK);
 }
 /*
 typedef struct pair_int{
