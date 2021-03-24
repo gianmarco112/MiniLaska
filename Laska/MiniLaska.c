@@ -817,8 +817,8 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         /*TODO                        */
                         enum color turno;
                         spostamento_pedine(&field, colore, index, j);/*Una delle possibili mosse*/
-                        if(colore)turno=BLACK;
-                        else turno=WHITE;
+                        if(!colore)turno=WHITE;
+                        else turno=BLACK;
                         printf("\n");
                         printf(" mossa %d \n",colore);
                         printf("\n");
@@ -840,8 +840,8 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         enum color turno;
 
                         spostamento_pedine(&field, colore, index, j);/*Una delle possibili mosse*/
-                        if(colore)turno=BLACK;
-                        else turno=WHITE;
+                        if(!colore)turno=WHITE;
+                        else turno=BLACK;
                         printf("\n");
                         printf(" mossa %d \n",colore);
                         printf("\n");
@@ -868,8 +868,8 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                     /*TODO                        */
                     enum color turno;
                     spostamento_pedine(&field, colore, index, i);/*Una delle possibili mosse*/
-                    if(colore)turno=BLACK;
-                    else turno=WHITE;
+                    if(!colore)turno=WHITE;
+                    else turno=BLACK;
                     printf("\n");
                     printf(" mossa %d \n",colore);
                     printf("\n");
