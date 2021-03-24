@@ -772,7 +772,7 @@ int n_promosse(field_t *field, enum color colore){
     }
     return num;
 } 
-pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore){
+pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
     pair_t res;
     pair_t sol;
     int i,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2;
@@ -781,11 +781,11 @@ pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore){
         res.indexb = 0;
         return res;
     }
-    npedine1=n_pedine(field,BLACK);
-    npedineAvv1=n_pedine(field,WHITE);
-    npromosse1=n_promosse(field,BLACK);
-    npromosseAvv1=n_promosse(field,WHITE);
-    if(field->pedine[index].is_obbligata){
+    npedine1=n_pedine(&field,BLACK);
+    npedineAvv1=n_pedine(&field,WHITE);
+    npromosse1=n_promosse(&field,BLACK);
+    npromosseAvv1=n_promosse(&field,WHITE);
+    if(field.pedine[index].is_obbligata){
 	int i,j,inizio,fine;
     if(!colore){
     inizio=0;
@@ -796,32 +796,32 @@ pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore){
     }
     for(i=inizio;i<fine;i++){
         /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
-        if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
+        if(field.pedine[i].altezza==SINGLE||field.pedine[i].altezza==TOP){
             /*Controllo quale o quali pedina/e devo mangiare*/
-            if(field->pedine[i].coord.y == field->pedine[index].coord.y-1/*Deve essere nella riga successiva*/){
-                if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){/*Cerco in una diagonale*/
+            if(field.pedine[i].coord.y == field.pedine[index].coord.y-1/*Deve essere nella riga successiva*/){
+                if(field.pedine[i].coord.x==field.pedine[index].coord.x+1){/*Cerco in una diagonale*/
                     /*Cerco gli spazi di destinazione della mia pedina*/
-                    for(j=0;j<field->nblanks;j++){
-                        if(field->blanks[j].coord.y==field->pedine[index].coord.y-2 &&
-                        (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
+                    for(j=0;j<field.nblanks;j++){
+                        if(field.blanks[j].coord.y==field.pedine[index].coord.y-2 &&
+                        (field.blanks[j].coord.x==field.pedine[index].coord.x+2)){
                         /*TODO                        */
                         enum color turno;
-                        spostamento_pedine(field, colore, index, j);/*Una delle possibili mosse*/
+                        spostamento_pedine(&field, colore, index, j);/*Una delle possibili mosse*/
                         if(colore)turno=BLACK;
                         else turno=WHITE;
                         res=cpu_pedina(field,depth-1,turno);
                         res.indexb=j;
                         }
                     }
-                }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
+                }else if(field.pedine[i].coord.x==field.pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
                     /*Cerco gli spazi di destinazione della mia pedina*/
-                    for(j=0;j<field->nblanks;j++){
-                        if(field->blanks[j].coord.y==field->pedine[index].coord.y-2 &&
-                        (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
+                    for(j=0;j<field.nblanks;j++){
+                        if(field.blanks[j].coord.y==field.pedine[index].coord.y-2 &&
+                        (field.blanks[j].coord.x==field.pedine[index].coord.x-2)){
                         /*TODO              */
                         enum color turno;
 
-                        spostamento_pedine(field, colore, index, j);/*Una delle possibili mosse*/
+                        spostamento_pedine(&field, colore, index, j);/*Una delle possibili mosse*/
                         if(colore)turno=BLACK;
                         else turno=WHITE;
                         res=cpu_pedina(field,depth-1,turno);
@@ -835,13 +835,13 @@ pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore){
     
     /*Se non ho mosse obbligatorie controllo le mosse di una casella in diagonale*/
     }else{
-        for(i=0;i<field->nblanks;i++){
-            if(field->blanks[i].coord.y==field->pedine[index].coord.y-1&&(
-                    field->blanks[i].coord.x==field->pedine[index].coord.x+1|| 
-                    field->blanks[i].coord.x==field->pedine[index].coord.x-1)) {
+        for(i=0;i<field.nblanks;i++){
+            if(field.blanks[i].coord.y==field.pedine[index].coord.y-1&&(
+                    field.blanks[i].coord.x==field.pedine[index].coord.x+1|| 
+                    field.blanks[i].coord.x==field.pedine[index].coord.x-1)) {
                     /*TODO                        */
                     enum color turno;
-                    spostamento_pedine(field, colore, index, i);/*Una delle possibili mosse*/
+                    spostamento_pedine(&field, colore, index, i);/*Una delle possibili mosse*/
                     if(colore)turno=BLACK;
                     else turno=WHITE;
                     res=cpu_pedina(field,depth-1,turno);
@@ -869,11 +869,11 @@ pair_t cpu_mossa(field_t *field,int index, int depth,enum color colore){
 
 
 
-pair_t cpu_pedina(field_t *field,int depth,enum color colore){
+pair_t cpu_pedina(field_t field,int depth,enum color colore){
     
     int index, indexb,i, k=0,c=0;
     int inizio,fine,massimo=0, indicemassimo=0;
-    stampa_field(field);
+    stampa_field(&field);
     bool_t control=FALSE;
     /* int sol[20]; */
     pair_t max[NPEDINE/2];
@@ -891,10 +891,10 @@ pair_t cpu_pedina(field_t *field,int depth,enum color colore){
         inizio=0;
         fine=NPEDINE/2;
     }
-    movable(colore,field);
+    movable(colore,&field);
     /*Prima controllo se ho la possibilità di mangiare una pedina*/
     for(i=inizio;i<fine;i++){
-        if(field->pedine[i].is_obbligata){
+        if(field.pedine[i].is_obbligata){
             /* sol[c]=i;
             c++; */
             max[k]=cpu_mossa(field, i,depth,colore);
@@ -906,7 +906,7 @@ pair_t cpu_pedina(field_t *field,int depth,enum color colore){
         /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
     if(!control){
         for(i=inizio;i<fine;i++){
-            if(field->pedine[i].is_movable){
+            if(field.pedine[i].is_movable){
                 /* sol[c]=i;
                 c++; */
                 max[k]=cpu_mossa(field, i,depth,colore);
@@ -926,7 +926,7 @@ pair_t cpu_pedina(field_t *field,int depth,enum color colore){
     
 }
 pair_t cpu_turn(field_t field){
-    return cpu_pedina(&field,10,BLACK);
+    return cpu_pedina(field,10,BLACK);
 }
 /*
 typedef struct pair_int{
