@@ -33,7 +33,7 @@ int main() {
     }*/  
     while(!field.partita.END_OF_PLAY){
     stampa_field(&field);
-    mossacpu =cpu_turn(field);
+    mossacpu =cpu_turn(&field);
     spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
     printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
     stampa_field(&field);
