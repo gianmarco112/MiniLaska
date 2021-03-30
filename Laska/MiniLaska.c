@@ -103,7 +103,7 @@ void start_game2(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/
 
 
-int min(int a,int b){if(a<b)return a;else return b;}
+//int min(int a,int b){if(a<b)return a;else return b;}
 
 void endgame(field_t *field){
 
@@ -544,6 +544,7 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 				field->pedine[j].coord=mossa;
 				field->pedine[j].altezza=CENTER;
                 field->pedine[indexM].altezza=BOTTOM;
+                field->pedine[indexM].coord=mossa;
 			}else if(control==11){
 				field->pedine[indexM].in_game=FALSE;
 				field->pedine[indexM].coord.x=-1;
@@ -573,15 +574,23 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
     }else{
         /*Scambio la pedina e lo spazio*/
         field->blanks[indexb].coord=field->pedine[index].coord;
-        if(field->pedine[index].altezza==SINGLE){
+        /*if(field->pedine[index].altezza==SINGLE){
             field->pedine[index].coord=mossa;
-        }else{/*Assumo che sia TOP*/
+        }else{Assumo che sia TOP
             int i;
             for(i=0;i<NPEDINE;i++){
                 if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
                 field->pedine[i].coord.y==field->pedine[index].coord.y){
                     field->pedine[i].coord=mossa;
                 }
+            }
+        }*/
+        int i;
+        for(i=0; i <NPEDINE; i++)
+        {
+            if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
+                field->pedine[i].coord.y==field->pedine[index].coord.y) {
+                field->pedine[i].coord = mossa;
             }
         }
         promossa(field,index);
@@ -701,11 +710,12 @@ void coord_to_char(field_t *field, int x, int y, char *ped)
         }
     }
     if (!singola){
+        ped[1] = ' ';
         for (i = 0; i < NPEDINE; i++){
             if (field->pedine[i].coord.x == x &&
                 field->pedine[i].coord.y == y){
                 if (field->pedine[i].altezza == TOP){   
-                    ped[1] = ' ';
+
                     if (field->pedine[i].colore){
                         ped[0] = 'b';
                     }else{
@@ -725,7 +735,6 @@ void coord_to_char(field_t *field, int x, int y, char *ped)
                         ped[2] = 'n';
                     }
                 }
-                
             }
         }
     }
@@ -1025,7 +1034,24 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
 }
 pair_t cpu_turn(field_t *field){
     field_t  campo=*field;
+    pedina_t* copia = field->pedine;
+
+    /*pedina_t* copiapedine = (pedina_t*)malloc(sizeof(pedina_t)*NPEDINE);
+    blanks_t* copiablanks = (blanks_t*)malloc(sizeof(blanks_t)*field->nblanks);
+    int i,z;
+    for(i=0;i<NPEDINE;i++){
+        copiapedine[i]=field->pedine[i];
+        if(i<field->nblanks)
+            copiablanks[i]=field->blanks[i];
+            }
     pair_t sol=cpu_pedina(campo,10,BLACK);
+    for(z=0;z<NPEDINE;z++){
+        field->pedine[z]=copiapedine[z];
+        if(z<field->nblanks)
+            field->blanks[z]=copiablanks[z];
+    }*/
+    pair_t sol=cpu_pedina(campo,10,BLACK);
+    field->pedine = copia;
     return sol;
 }
 
@@ -1172,22 +1198,52 @@ void start_game2(field_t *field){
     field->partita.VICTORY_P1=FALSE;
     
 }
-/* int main() {
+int main() {
     pair_t mossacpu;
     
     field_t field;
     start_game2(&field);
-    while(!field.partita.END_OF_PLAY){
+    /*while(!field.partita.END_OF_PLAY){
+        print_pedine(&field);
     stampa_field(&field);
     mossacpu =cpu_turn(&field);
     spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
     printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
+    print_pedine(&field);
     stampa_field(&field);
     movable(WHITE,&field);
     if(field.partita.END_OF_PLAY)
         break;
     sel_pedina(WHITE,&field);
     }
+    free_pedine(&field);*/
+
+    /*while(!field.partita.END_OF_PLAY){
+        print_pedine(&field);
+        stampa_field(&field);
+        mossacpu =cpu_turn(&field);
+        print_pedine(&field);
+        spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
+        printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
+        print_pedine(&field);
+        stampa_field(&field);
+        movable(WHITE,&field);
+        if(field.partita.END_OF_PLAY)
+            break;
+        sel_pedina(WHITE,&field);
+    }*/
+    while(!field.partita.END_OF_PLAY){
+        print_pedine(&field);
+       stampa_field(&field);
+       movable(BLACK,&field);
+       if(field.partita.END_OF_PLAY)
+           break;
+       sel_pedina(BLACK,&field);
+       print_pedine(&field);
+       stampa_field(&field);
+       movable(WHITE,&field);
+       sel_pedina(WHITE,&field);
+    }
     free_pedine(&field);
     return 0;
-} */
+}

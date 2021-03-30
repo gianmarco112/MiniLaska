@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "C:/Users/Gianmarco/GitHub/MiniLaska/Laska/MiniLaska.c" "C:/Users/Gianmarco/GitHub/MiniLaska/cmake-build-debug/CMakeFiles/MiniLaska.dir/Laska/MiniLaska.c.obj"
+  "C:/Users/samu9/Documents/GitHub/MiniLaska/Laska/MiniLaska.c" "C:/Users/samu9/Documents/GitHub/MiniLaska/cmake-build-debug/CMakeFiles/MiniLaska.dir/Laska/MiniLaska.c.obj"
   )
-set(CMAKE_C_COMPILER_ID "GNU")
+set(CMAKE_C_COMPILER_ID "MSVC")
 
 # The include file search paths:
 set(CMAKE_C_TARGET_INCLUDE_PATH
