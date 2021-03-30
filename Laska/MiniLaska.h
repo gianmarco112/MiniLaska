@@ -75,5 +75,6 @@ void stampa_field(field_t *field);
 void endgame(field_t *field);
 void start_game2(field_t *field);
 void free_pedine(field_t *field);
-pair_t cpu_turn(field_t field);
+pair_t cpu_pedina(field_t field,int depth,enum color colore);
+pair_t cpu_turn(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/

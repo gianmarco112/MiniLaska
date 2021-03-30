@@ -93,7 +93,7 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 int coord_to_index(field_t *field, coord_t coord);
 char* coord_to_pedina (field_t *field, coord_t cor);
 int altezza_pedina(field_t *field, coord_t coord);
-pair_t cpu_turn(field_t field);
+pair_t cpu_turn(field_t *field);
 pair_t cpu_pedina(field_t field,int depth,enum color colore);
 pair_t cpu_mossa(field_t field,int index, int depth,enum color colore);
 void stampa_field(field_t *field);
@@ -962,8 +962,10 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
     return max[indicemassimo];
     
 }
-pair_t cpu_turn(field_t field){
-    return cpu_pedina(field,10,BLACK);
+pair_t cpu_turn(field_t *field){
+    field_t  campo=*field;
+    pair_t sol=cpu_pedina(campo,10,BLACK);
+    return sol;
 }
 /*
 typedef struct pair_int{
@@ -1219,3 +1221,35 @@ int main() {
     return 0;
 }
 */
+int main() {
+    pair_t sol;
+    field_t *field=(field_t*)malloc(sizeof (field_t));
+    start_game2(field);
+
+    /* while(!field.partita.END_OF_PLAY){
+        stampa_field(&field);
+        movable(WHITE,&field);
+        if(field.partita.END_OF_PLAY)
+            break;
+        sel_pedina(WHITE,&field);
+        stampa_field(&field);
+        movable(BLACK,&field);
+        sel_pedina(BLACK,&field);
+    } */
+    /* while(!field.partita.END_OF_PLAY){
+        stampa_field(&field);
+        movable(WHITE,&field);
+        if(field.partita.END_OF_PLAY)
+            break;
+        sel_pedina(WHITE,&field);
+        stampa_field(&field);
+        movable(BLACK,&field);
+        cpu_turn(field);
+
+    }*/
+    stampa_field(field);
+    sol=cpu_pedina(*field,10,BLACK);
+    stampa_field(field);
+    free_pedine(field);
+    return 0;
+}
