@@ -540,7 +540,7 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
             
 			field->pedine[index].coord=mossa;
 			if(control==10){
-				field->pedine[j].coord=mossa;
+				/* field->pedine[j].coord=mossa; */
 				field->pedine[j].altezza=CENTER;
                 field->pedine[indexM].altezza=BOTTOM;
                 field->pedine[indexM].coord=mossa;
@@ -548,8 +548,8 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 				field->pedine[indexM].in_game=FALSE;
 				field->pedine[indexM].coord.x=-1;
 				field->pedine[indexM].coord.y=-1;
-				field->pedine[j].coord=mossa;
-				field->pedine[k].coord=mossa;
+				/* field->pedine[j].coord=mossa;
+				field->pedine[k].coord=mossa; */
 			}else{
                 printf("Error 2 control=%d\n",control);
                 debug=TRUE;
@@ -562,21 +562,21 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
        
         if(field->pedine[indexM].in_game){
             field->pedine[indexM].coord=mossa;
-            field->pedine[indexM].is_movable=FALSE;
-		}/*
-        printf("%d\n",indexM);
-        printf("Pedina 0 in %d%d\n",field->pedine[0].coord.y,field->pedine[0].coord.y);*/
+            /* field->pedine[indexM].is_movable=FALSE; */
+		}
+        
         if(field->pedine[index].in_game){
             field->pedine[index].coord=mossa;
             field->pedine[index].altezza=TOP;
         }
-        /* stampa_field(field); */
+        
     }else{
+        /* int i; */
         /*Scambio la pedina e lo spazio*/
         field->blanks[indexb].coord=field->pedine[index].coord;
-        /*if(field->pedine[index].altezza==SINGLE){
+        if(field->pedine[index].altezza==SINGLE){
             field->pedine[index].coord=mossa;
-        }else{Assumo che sia TOP
+        }else{/* Assumo che sia TOP */
             int i;
             for(i=0;i<NPEDINE;i++){
                 if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
@@ -584,15 +584,14 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
                     field->pedine[i].coord=mossa;
                 }
             }
-        }*/
-        int i;
-        for(i=0; i <NPEDINE; i++)
+        }
+        /* for(i=0; i <NPEDINE; i++)
         {
             if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
                 field->pedine[i].coord.y==field->pedine[index].coord.y) {
                 field->pedine[i].coord = mossa;
             }
-        }
+        } */
         promossa(field,index);
         
     }
