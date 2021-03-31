@@ -466,8 +466,7 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
         
         int indexM=-1;
         int i,j=0,k=0;
-        int control=0;/**/
-        /* stampa_field(field); */
+        int control=0;/*Serve per il controllo dell'altezza delle pedine*/
         for(i=0;i<NPEDINE;i++){
             /*Ricavo l'indice della pedina da mangiare, 
             prendo il minore tra le cordinate e ci aggiungo uno per trovare la pedina di mezzo*/
@@ -477,19 +476,19 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
             indexM=i;
         }
         if(indexM==-1){
-            printf("Error\n");
+            printf("Error pedina mangiata\n");
         }
         /*Sposto lo spazio*/ 
         field->blanks[indexb].coord=field->pedine[index].coord;
 
         /*Caso in cui la pedina mangiata sia singola*/
         if(field->pedine[indexM].altezza==SINGLE){
-        /*ne creo uno in più*/
-        field->blanks[field->nblanks].coord=field->pedine[indexM].coord;
-        /*Incremento il numero di spazi*/
-        field->nblanks++;
-		field->pedine[indexM].altezza=BOTTOM;
-        
+            /*ne creo uno in più*/
+            field->blanks[field->nblanks].coord=field->pedine[indexM].coord;
+            /*Incremento il numero di spazi*/
+            field->nblanks++;
+            field->pedine[indexM].altezza=BOTTOM;
+            
         /*Nel caso in cui rubo una torre libero le pedine sotto*/
         }else if(field->pedine[indexM].altezza==TOP){
             bool_t doppia=FALSE;
@@ -498,14 +497,14 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
                 if(i!=indexM && 
                 field->pedine[i].coord.x==field->pedine[indexM].coord.x&&
                 field->pedine[i].coord.y==field->pedine[indexM].coord.y){
-                    if(field->pedine[i].altezza==CENTER){
+                    if(field->pedine[i].altezza==CENTER){/*LA PEDINA AL CENTRO diventa TOP e la BOTTOM resta BOTTOM*/
 						field->pedine[i].altezza=TOP;
                         doppia=TRUE;
                         break;
                     }
                 }
             }
-            if(!doppia){
+            if(!doppia){/*Caso in cui la torre sia da due (TOP e BOTTOM)*/
                 for(i=0;i<NPEDINE;i++){
                 if(i!=indexM && 
                 field->pedine[i].coord.x==field->pedine[indexM].coord.x&&
