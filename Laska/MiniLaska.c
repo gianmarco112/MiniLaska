@@ -977,7 +977,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
     else if(npromosse1>npromosse2)sol[countersol].score--;
     if(npromosseAvv1>npromosseAvv2)sol[countersol].score++;
     else if(npromosseAvv1< npromosseAvv2)sol[countersol].score--; */
-    if(countersol=0)printf("Errore countersol\n");
+    if(countersol==0)printf("Errore countersol\n");
     retval=sol[0];
     while(countersol>0){
         if(retval.score<sol[countersol].score)
@@ -1033,7 +1033,7 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
             }
         }
     }
-    if(k=0)printf("Errore max\n");
+    if(k==0)printf("Errore max\n");
     massimo=max[0].score;
     for(i=0;i<k;i++){
         if(max[i].score>massimo){
