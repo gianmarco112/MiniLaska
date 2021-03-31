@@ -392,7 +392,7 @@ int possible_moves(enum color colore, field_t *field,int index){
  * @param field 
  */
 void sel_pedina(enum color colore,field_t *field){
-    int i, index=NPEDINE+1,indexb,isol;
+    int i, index=NPEDINE+1,indexb,isol=0;
     int inizio,fine;
     bool_t control=FALSE;
     int sol[20];
@@ -435,7 +435,7 @@ void sel_pedina(enum color colore,field_t *field){
                 index=NPEDINE+1;
             }
 
-            if(!field->pedine[index].is_obbligata&&!field->pedine[index].is_movable){
+            if(!field->pedine[index].is_obbligata||!field->pedine[index].is_movable){
                 printf("errore nell'inserimento \n");
                 index=NPEDINE+1;
             }
