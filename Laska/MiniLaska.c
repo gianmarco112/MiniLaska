@@ -597,8 +597,8 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
         
     }
     
-    printf("Pedina in %d%d\n",field->pedine[index].coord.y,field->pedine[index].coord.x);
-    printf("Spazio in %d%d\n",field->blanks[indexb].coord.y,field->blanks[indexb].coord.x);
+    if(debug)printf("Pedina in %d%d\n",field->pedine[index].coord.y,field->pedine[index].coord.x);
+    if(debug)printf("Spazio in %d%d\n",field->blanks[indexb].coord.y,field->blanks[indexb].coord.x);
     
    if(debug)print_pedine(field);
 } 
