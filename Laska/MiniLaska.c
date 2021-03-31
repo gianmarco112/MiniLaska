@@ -675,19 +675,18 @@ void ops_sel() {
  * @param y 
  * @param ped 
  */
-void coord_to_char(field_t *field, int x, int y, char *ped)
-{
+void coord_to_char(field_t *field, int x, int y, char *ped){
     int i;
-    bool_t singola = FALSE;
     for(i=0;i<field->nblanks;i++){
         if (field->blanks[i].coord.x == x &&
             field->blanks[i].coord.y == y){
-                ped[0]=' ';
-                ped[1]=' ';
-                ped[2]=' ';
-                return;
-            }
+            ped[0]=' ';
+            ped[1]=' ';
+            ped[2]=' ';
+            return;
+        }
     }
+    /* bool_t singola = FALSE; */
     /* for (i = 0; i < NPEDINE; i++){
         if (field->pedine[i].coord.x == x &&
             field->pedine[i].coord.y == y &&
@@ -1076,7 +1075,7 @@ pair_t cpu_turn(field_t *field){
  */
 void stampa_field(field_t *field){
     int i, j;
-    int x = 1, y = 1;
+    /* int x=1, y=1; */
     char *ped = malloc(3*sizeof(char));
     ped[0]='|';
     ped[1]='|';
