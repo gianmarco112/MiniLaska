@@ -457,6 +457,7 @@ void sel_pedina(enum color colore,field_t *field){
  * @param indexb 
  */
 void spostamento_pedine(field_t *field, enum color colore, int index, int indexb){
+    bool_t debug=FALSE;
     coord_t mossa;
     mossa=field->blanks[indexb].coord;
     /*Mi ritorna l'indice dello spazio bianco di destinazione dal quale estraggo le cordinate*/    
@@ -552,7 +553,8 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 				field->pedine[j].coord=mossa;
 				field->pedine[k].coord=mossa;
 			}else{
-                printf("Error 2 \n");
+                printf("Error 2 control=%d\n",control);
+                debug=TRUE;
                 /* stampa_field(field); */
                 /* field->pedine[j].coord=mossa;
 				field->pedine[j].altezza=CENTER;
@@ -600,7 +602,8 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
     printf("Pedina in %d%d\n",field->pedine[index].coord.y,field->pedine[index].coord.x);
     printf("Spazio in %d%d\n",field->blanks[indexb].coord.y,field->blanks[indexb].coord.x);
     */
-}
+   /* if(debug)print_pedine(field);*/
+} 
 
 
 /**
@@ -977,6 +980,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
     else if(npromosse1>npromosse2)sol[countersol].score--;
     if(npromosseAvv1>npromosseAvv2)sol[countersol].score++;
     else if(npromosseAvv1< npromosseAvv2)sol[countersol].score--; */
+    if(countersol=0)printf("Errore countersol\n");
     retval=sol[0];
     while(countersol>0){
         if(retval.score<sol[countersol].score)
@@ -996,8 +1000,8 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
     printf("%d",depth);
     printf("\n"); */
     bool_t control=FALSE;
-    /* int sol[20]; */
-    pair_t max[NPEDINE/2];
+    
+    pair_t *max=malloc(sizeof(pair_t)*NPEDINE);
     if (depth==0){
         pair_t res;
         res.score = 0;
@@ -1016,28 +1020,25 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
     /*Prima controllo se ho la possibilità di mangiare una pedina*/
     for(i=inizio;i<fine;i++){
         if(field.pedine[i].is_obbligata){
-            /* sol[c]=i;
-            c++; */
             max[k]=cpu_mossa(field, i,depth,colore);
             max[k].index=i;
             k++;
             control=TRUE;
         }
     }  
-        /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
+    /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
     if(!control){
         for(i=inizio;i<fine;i++){
             if(field.pedine[i].is_movable){
-                /* sol[c]=i;
-                c++; */
                 max[k]=cpu_mossa(field, i,depth,colore);
                 max[k].index=i;
                 k++;
             }
         }
     }
+    if(k=0)printf("Errore max\n");
     massimo=max[0].score;
-    for(i=0;i<=k;i++){
+    for(i=0;i<k;i++){
         if(max[i].score>massimo){
             massimo=max[i].score;
             indicemassimo = i;
@@ -1048,7 +1049,7 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
 }
 pair_t cpu_turn(field_t *field){
     field_t  campo=*field;
-    pedina_t* copia = field->pedine;
+    /* pedina_t* copia = field->pedine; */
 
     /*pedina_t* copiapedine = (pedina_t*)malloc(sizeof(pedina_t)*NPEDINE);
     blanks_t* copiablanks = (blanks_t*)malloc(sizeof(blanks_t)*field->nblanks);
@@ -1065,7 +1066,7 @@ pair_t cpu_turn(field_t *field){
             field->blanks[z]=copiablanks[z];
     }*/
     pair_t sol=cpu_pedina(campo,10,BLACK);
-    field->pedine = copia;
+    /* field->pedine = copia; */
     return sol;
 }
 
@@ -1230,9 +1231,9 @@ int main() {
         break;
     sel_pedina(WHITE,&field);
     }
-    free_pedine(&field);*/
+    */
 
-    /*while(!field.partita.END_OF_PLAY){
+    while(!field.partita.END_OF_PLAY){
         print_pedine(&field);
         stampa_field(&field);
         mossacpu =cpu_turn(&field);
@@ -1245,8 +1246,8 @@ int main() {
         if(field.partita.END_OF_PLAY)
             break;
         sel_pedina(WHITE,&field);
-    }*/
-    while(!field.partita.END_OF_PLAY){
+    }
+    /* while(!field.partita.END_OF_PLAY){
         print_pedine(&field);
        stampa_field(&field);
        movable(BLACK,&field);
@@ -1257,7 +1258,7 @@ int main() {
        stampa_field(&field);
        movable(WHITE,&field);
        sel_pedina(WHITE,&field);
-    }
+    } */
     free_pedine(&field);
     return 0;
 }
