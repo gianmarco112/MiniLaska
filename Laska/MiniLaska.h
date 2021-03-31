@@ -77,5 +77,5 @@ void endgame(field_t *field);
 void start_game2(field_t *field);
 void free_pedine(field_t *field);
 void spostamento_pedine(field_t *field, enum color colore, int index, int indexb);
-pair_t cpu_turn(field_t field);
+pair_t cpu_turn(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/

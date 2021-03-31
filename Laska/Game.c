@@ -4,7 +4,7 @@
 #include <stdlib.h>
 /*gcc MiniLaska.c -c -oMiniLaska.o -ansi -pedantic*/
 /*gcc Game.c -oLaska -ansi -pedantic MiniLaska.o*/
-int main() {
+/*int main() {
     pair_t mossacpu;
     /* field_t *field=(field_t*)malloc(sizeof (field_t)); */
     field_t field;
@@ -33,7 +33,7 @@ int main() {
     }*/  
     while(!field.partita.END_OF_PLAY){
     stampa_field(&field);
-    mossacpu =cpu_turn(field);
+    mossacpu =cpu_turn(&field);
     spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
     printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
     stampa_field(&field);
@@ -44,4 +44,4 @@ int main() {
     }
     free_pedine(&field);
     return 0;
-}
+}*/
