@@ -676,9 +676,10 @@ void coord_to_char(field_t *field, int x, int y, char *ped)
                 ped[0]=' ';
                 ped[1]=' ';
                 ped[2]=' ';
+                return;
             }
     }
-    for (i = 0; i < NPEDINE; i++){
+    /* for (i = 0; i < NPEDINE; i++){
         if (field->pedine[i].coord.x == x &&
             field->pedine[i].coord.y == y &&
             field->pedine[i].altezza == SINGLE){
@@ -696,15 +697,29 @@ void coord_to_char(field_t *field, int x, int y, char *ped)
                 else
                 ped[1] = 'n';
             }
-            
             break;
         }
-    }
-    if (!singola){
+    } */
+    /* if (!singola){ */
         for (i = 0; i < NPEDINE; i++){
             if (field->pedine[i].coord.x == x &&
                 field->pedine[i].coord.y == y){
-                if (field->pedine[i].altezza == TOP){   
+                if(field->pedine[i].altezza == SINGLE){
+                    ped[0]=' ';
+                    ped[2]=' ';
+                    if (field->pedine[i].colore){
+                        if(field->pedine[i].promossa)
+                            ped[1] = 'B';
+                        else
+                            ped[1] = 'b';
+                    }else{
+                        if(field->pedine[i].promossa)
+                            ped[1] = 'N';
+                        else
+                            ped[1] = 'n';
+                    } 
+                    return;
+                }else if (field->pedine[i].altezza == TOP){   
                     ped[1] = ' ';
                     if (field->pedine[i].colore){
                         ped[0] = 'b';
@@ -728,7 +743,7 @@ void coord_to_char(field_t *field, int x, int y, char *ped)
                 
             }
         }
-    }
+    /* } */
 }
 /*
 typedef struct pair_int{
