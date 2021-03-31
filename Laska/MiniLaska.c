@@ -550,7 +550,12 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 				field->pedine[indexM].coord.y=-1;
 				/* field->pedine[j].coord=mossa;
 				field->pedine[k].coord=mossa; */
-			}else{
+			}else if(control==20){
+                field->pedine[j].altezza=CENTER;
+                field->pedine[indexM].in_game=FALSE;
+				field->pedine[indexM].coord.x=-1;
+				field->pedine[indexM].coord.y=-1;
+            }else{
                 printf("Error 2 control=%d\n",control);
                 debug=TRUE;
                 /* stampa_field(field); */
