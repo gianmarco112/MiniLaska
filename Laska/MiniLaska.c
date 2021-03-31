@@ -332,7 +332,7 @@ int possible_moves(enum color colore, field_t *field,int index){
         }
     for(i=inizio;i<fine;i++){
         /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
-        if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
+        if((field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP)&&field->pedine[i].colore!=field->pedine[index].colore){
             /*Controllo quale o quali pedina/e devo mangiare*/
             if(field->pedine[i].coord.y == field->pedine[index].coord.y+col/*Deve essere nella riga successiva*/){
                 if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){/*Cerco in una diagonale*/
@@ -832,7 +832,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
     
     for(i=inizio;i<fine;i++){
         /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
-        if(field.pedine[i].altezza==SINGLE||field.pedine[i].altezza==TOP){
+        if((field.pedine[i].altezza==SINGLE||field.pedine[i].altezza==TOP)&&field.pedine[i].colore!=field.pedine[index].colore){
             /*Controllo quale o quali pedina/e devo mangiare*/
             if(field.pedine[i].coord.y == field.pedine[index].coord.y+posy/*Deve essere nella riga successiva*/){
                 if(field.pedine[i].coord.x==field.pedine[index].coord.x+1){/*Cerco in una diagonale*/
