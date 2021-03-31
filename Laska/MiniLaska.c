@@ -103,7 +103,7 @@ void start_game2(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/
 
 
-//int min(int a,int b){if(a<b)return a;else return b;}
+int min(int a,int b){if(a<b)return a;else return b;}
 
 void endgame(field_t *field){
 
@@ -728,7 +728,7 @@ void coord_to_char(field_t *field, int x, int y, char *ped){
                     } 
                     return;
                 }else if (field->pedine[i].altezza == TOP){   
-                    ped[1] = ' ';
+                    if(ped[1]=='|')ped[1] = ' ';/*Nel caso in cui non abbia già trovato una pedina al centro*/
                     if (field->pedine[i].colore){
                         ped[0] = 'b';
                     }else{
