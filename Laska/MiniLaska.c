@@ -584,12 +584,12 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
         }
         
     }else{
-        /* int i; */
+         int i;
         /*Scambio la pedina e lo spazio*/
         field->blanks[indexb].coord=field->pedine[index].coord;
-        if(field->pedine[index].altezza==SINGLE){
+        /* if(field->pedine[index].altezza==SINGLE){
             field->pedine[index].coord=mossa;
-        }else{/* Assumo che sia TOP */
+        }else{ Assumo che sia TOP 
             int i;
             for(i=0;i<NPEDINE;i++){
                 if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
@@ -597,14 +597,13 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
                     field->pedine[i].coord=mossa;
                 }
             }
-        }
-        /* for(i=0; i <NPEDINE; i++)
-        {
+        } */
+        for(i=0; i <NPEDINE; i++){
             if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
                 field->pedine[i].coord.y==field->pedine[index].coord.y) {
                 field->pedine[i].coord = mossa;
             }
-        } */
+        } 
         promossa(field,index);
         
     }
