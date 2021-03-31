@@ -523,24 +523,38 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
         /*Nel caso la pedina che mangia sia una torre*/
         if(field->pedine[index].altezza==TOP){
             /*Cerco le pedine sottostanti*/
+            int indicebottom=-1;
             for(i=0;i<NPEDINE;i++){
                 if(i!=index&&field->pedine[i].coord.x==field->pedine[index].coord.x&&
                 field->pedine[i].coord.y==field->pedine[index].coord.y){
                     /*Sposto le pedine che compongono la torre*/
                     field->pedine[i].coord=mossa;
                     if(field->pedine[i].altezza==CENTER){
-                        control++;
-                        k=i;
+                        /* control++;
+                        k=i; */
+                        if(indicebottom!=-1){
+                            field->pedine[indicebottom].altezza=BOTTOM;
+                        }
+                        break;
                     }else if(field->pedine[i].altezza==BOTTOM){
-                        control+=10;
-                        j=i;
+                        /* control+=10;
+                        j=i; */
+                        indicebottom=i;
+                        field->pedine[i].altezza=CENTER;
                     }
                 }
             }
             
 			field->pedine[index].coord=mossa;
-			if(control==10){
-				/* field->pedine[j].coord=mossa; */
+            if(indicebottom!=-1 && field->pedine[indicebottom].altezza!=BOTTOM){
+                field->pedine[indexM].altezza=BOTTOM;
+                field->pedine[indexM].coord=mossa;
+            }else{
+                field->pedine[indexM].in_game=FALSE;
+				field->pedine[indexM].coord.x=-1;
+				field->pedine[indexM].coord.y=-1;
+            }
+			/* if(control==10){
 				field->pedine[j].altezza=CENTER;
                 field->pedine[indexM].altezza=BOTTOM;
                 field->pedine[indexM].coord=mossa;
@@ -548,8 +562,6 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
 				field->pedine[indexM].in_game=FALSE;
 				field->pedine[indexM].coord.x=-1;
 				field->pedine[indexM].coord.y=-1;
-				/* field->pedine[j].coord=mossa;
-				field->pedine[k].coord=mossa; */
 			}else if(control==20){
                 field->pedine[j].altezza=CENTER;
                 field->pedine[indexM].in_game=FALSE;
@@ -558,11 +570,7 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
             }else{
                 printf("Error 2 control=%d\n",control);
                 debug=TRUE;
-                /* stampa_field(field); */
-                /* field->pedine[j].coord=mossa;
-				field->pedine[j].altezza=CENTER;
-                field->pedine[indexM].altezza=BOTTOM; */
-            }
+            } */
 		}
        
         if(field->pedine[indexM].in_game){
