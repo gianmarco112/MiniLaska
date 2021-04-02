@@ -809,7 +809,7 @@ int n_promosse(field_t *field, enum color colore){
 } 
 pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
     pair_t res;
-    pair_t sol[4];
+    pair_t sol[NPEDINE];
     pair_t retval;
     int i,z,countersol=0,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2,posy,inizio,fine;
     pedina_t* copiapedine = (pedina_t*)malloc(sizeof(pedina_t)*NPEDINE);
@@ -1125,7 +1125,8 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
             retval=sol[countersol];
         countersol--;
     }
-
+    free(copiablanks);
+    free(copiapedine);
     return retval;
 }
 
@@ -1138,7 +1139,7 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
     printf("%d",depth);
     printf("\n"); */
     bool_t control=FALSE;
-    
+    pair_t retval;
     pair_t *max=malloc(sizeof(pair_t)*NPEDINE);
     if (depth==0){
         pair_t res;
@@ -1190,7 +1191,10 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
             indicemassimo = i;
         }
     }
-    return max[indicemassimo];
+    
+    retval= max[indicemassimo];
+    free(max);
+    return retval;
     
 }
 pair_t cpu_turn(field_t *field){
