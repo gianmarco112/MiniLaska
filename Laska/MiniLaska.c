@@ -1192,9 +1192,8 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
         }
     }
     
-    retval= max[indicemassimo];
-    free(max);
-    return retval;
+    return max[indicemassimo];
+    
     
 }
 pair_t cpu_turn(field_t *field){
