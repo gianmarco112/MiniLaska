@@ -1058,6 +1058,44 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                                 field.blanks[z]=copiablanks[z];
                     }
                     
+            }else if(field.pedine[index].promossa){
+                if(field.blanks[i].coord.y==field.pedine[index].coord.y-posy&&(
+                    field.blanks[i].coord.x==field.pedine[index].coord.x+1|| 
+                    field.blanks[i].coord.x==field.pedine[index].coord.x-1)) {
+                    /*TODO                        */
+                    enum color turno;
+                    spostamento_pedine(&field, colore, index, i);/*Una delle possibili mosse*/
+                    if(!colore)turno=WHITE;
+                    else turno=BLACK;
+                    /* printf("\n");
+                    printf(" mossa %d \n",turno);
+                    printf("\n"); */
+                    res=cpu_pedina(field,depth-1,turno);
+                    sol[countersol].index=index;
+                    sol[countersol].score=res.score;
+                    sol[countersol].indexb=i;
+                    npedine2=n_pedine(&field,BLACK);
+                    npedineAvv2=n_pedine(&field,WHITE);
+                    npromosse2=n_promosse(&field,BLACK);
+                    npromosseAvv2=n_promosse(&field,WHITE);
+                        /*Assegnamento del punteggio*/
+                        if(npedine1<npedine2)sol[countersol].score++;
+                            else if(npedine1>npedine2)sol[countersol].score--;
+                        if(npedineAvv1>npedineAvv2)sol[countersol].score++;
+                            else if(npedineAvv1<npedineAvv2)sol[countersol].score--;
+                        if(npromosse1<npromosse2)sol[countersol].score++;
+                            else if(npromosse1>npromosse2)sol[countersol].score--;
+                        if(npromosseAvv1>npromosseAvv2)sol[countersol].score++;
+                            else if(npromosseAvv1< npromosseAvv2)sol[countersol].score--;
+                    countersol++;
+                    field.nblanks=nblanks;
+                    for(z=0;z<NPEDINE;z++){
+                            field.pedine[z]=copiapedine[z];
+                            if(z<field.nblanks)
+                                field.blanks[z]=copiablanks[z];
+                    }
+                    
+            }
             }
         }
     }
