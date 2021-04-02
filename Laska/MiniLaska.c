@@ -1216,6 +1216,39 @@ pair_t cpu_turn(field_t *field){
 
     return sol;
 }
+void fixbugs(field_t *field){
+    int i,j,k,contBottom=0,indexBOTTOM=-1;
+    coord_t coordTOP,coordBOTTOM;
+    for(i=0; i<NPEDINE; i++){
+        if(field->pedine[i].altezza==TOP){
+            coordTOP=field->pedine[i].coord;
+            for(j=0; j<NPEDINE && contBottom == 0; j++){
+                if(j!=i&&field->pedine[j].coord.x==coordTOP.x&&field->pedine[j].coord.y==coordTOP.y&&field->pedine[j].altezza==BOTTOM){
+                    contBottom++;
+                }
+            }
+            if(!contBottom){
+                
+                for(j=0; j<NPEDINE; j++){
+                    int control2=0;
+                    if(field->pedine[j].altezza==BOTTOM){
+                        coordBOTTOM=field->pedine[i].coord;
+                        for(k=0; k<NPEDINE && contBottom == 0; k++){
+                            if(j!=k&&field->pedine[j].coord.x==coordBOTTOM.x&&field->pedine[j].coord.y==coordBOTTOM.y){
+                                control2++;
+                                break;
+                            }
+                        }
+                        if(!control2){
+                            field->pedine[j].coord = coordTOP;
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 /**
  * @brief Funzione di stampa del campo
@@ -1369,7 +1402,6 @@ int main() {
     scanf("%d",&selezione);
     if(selezione){
         while(!field.partita.END_OF_PLAY){
-            print_pedine(&field);
             stampa_field(&field);
             movable(BLACK,&field);
             if(field.partita.END_OF_PLAY)
@@ -1379,11 +1411,15 @@ int main() {
             spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
             printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
             print_pedine(&field);
+            fixbugs(&field);
+            
             stampa_field(&field);
             movable(WHITE,&field);
             if(field.partita.END_OF_PLAY)
                 break;
             sel_pedina(WHITE,&field);
+            print_pedine(&field);
+            fixbugs(&field);
         }
     }
     if(selezione==2){
