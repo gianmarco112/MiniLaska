@@ -435,7 +435,7 @@ void sel_pedina(enum color colore,field_t *field){
                 index=NPEDINE+1;
             }
 
-            if(!field->pedine[index].is_obbligata||!field->pedine[index].is_movable){
+            if(!field->pedine[index].is_movable){
                 printf("errore nell'inserimento \n");
                 index=NPEDINE+1;
             }
