@@ -811,6 +811,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
     int i,z,countersol=0,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2,posy,inizio,fine;
     pedina_t* copiapedine = (pedina_t*)malloc(sizeof(pedina_t)*NPEDINE);
     blanks_t* copiablanks = (blanks_t*)malloc(sizeof(blanks_t)*field.nblanks);
+    int nblanks=field.nblanks;
     res.score=0;
     /* printf("\n");
     printf("%d",depth);
@@ -878,6 +879,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         if(npromosseAvv1>npromosseAvv2)sol[countersol].score++;
                             else if(npromosseAvv1< npromosseAvv2)sol[countersol].score--;
                         countersol++;
+                        field.nblanks=nblanks;
                         for(z=0;z<NPEDINE;z++){
                             field.pedine[z]=copiapedine[z];
                             if(z<field.nblanks)
@@ -918,6 +920,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                         if(npromosseAvv1>npromosseAvv2)sol[countersol].score++;
                             else if(npromosseAvv1< npromosseAvv2)sol[countersol].score--;
                         countersol++;
+                        field.nblanks=nblanks;
                         for(z=0;z<NPEDINE;z++){
                             field.pedine[z]=copiapedine[z];
                             if(z<field.nblanks)
@@ -947,12 +950,12 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                     printf("\n"); */
                     res=cpu_pedina(field,depth-1,turno);
                     sol[countersol].index=index;
-                        sol[countersol].score=res.score;
-                        sol[countersol].indexb=i;
-                        npedine2=n_pedine(&field,BLACK);
-                        npedineAvv2=n_pedine(&field,WHITE);
-                        npromosse2=n_promosse(&field,BLACK);
-                        npromosseAvv2=n_promosse(&field,WHITE);
+                    sol[countersol].score=res.score;
+                    sol[countersol].indexb=i;
+                    npedine2=n_pedine(&field,BLACK);
+                    npedineAvv2=n_pedine(&field,WHITE);
+                    npromosse2=n_promosse(&field,BLACK);
+                    npromosseAvv2=n_promosse(&field,WHITE);
                         /*Assegnamento del punteggio*/
                         if(npedine1<npedine2)sol[countersol].score++;
                             else if(npedine1>npedine2)sol[countersol].score--;
@@ -962,7 +965,8 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
                             else if(npromosse1>npromosse2)sol[countersol].score--;
                         if(npromosseAvv1>npromosseAvv2)sol[countersol].score++;
                             else if(npromosseAvv1< npromosseAvv2)sol[countersol].score--;
-                        countersol++;
+                    countersol++;
+                    field.nblanks=nblanks;
                     for(z=0;z<NPEDINE;z++){
                             field.pedine[z]=copiapedine[z];
                             if(z<field.nblanks)
