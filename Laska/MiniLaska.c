@@ -1125,8 +1125,8 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
             retval=sol[countersol];
         countersol--;
     }
-    free(copiablanks);
-    free(copiapedine);
+    /* free(copiablanks);
+    free(copiapedine); */
     return retval;
 }
 
