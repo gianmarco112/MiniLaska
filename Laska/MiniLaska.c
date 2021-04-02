@@ -601,7 +601,8 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
         for(i=0; i <NPEDINE; i++){
             if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
                 field->pedine[i].coord.y==field->pedine[index].coord.y) {
-                field->pedine[i].coord = mossa;
+                field->pedine[i].coord.x = mossa.x;
+                field->pedine[i].coord.y = mossa.y;
             }
         } 
         promossa(field,index);
