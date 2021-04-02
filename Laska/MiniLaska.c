@@ -103,7 +103,7 @@ void start_game2(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/
 
 
-int min(int a,int b){if(a<b)return a;else return b;}
+//int min(int a,int b){if(a<b)return a;else return b;}
 
 void endgame(field_t *field){
 
@@ -1125,8 +1125,8 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
             retval=sol[countersol];
         countersol--;
     }
-    /* free(copiablanks);
-    free(copiapedine); */
+    free(copiablanks);
+    free(copiapedine);
     return retval;
 }
 
@@ -1198,10 +1198,9 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
 }
 pair_t cpu_turn(field_t *field){
     field_t  campo=*field;
-    /* pedina_t* copia = field->pedine; */
 
-    /*pedina_t* copiapedine = (pedina_t*)malloc(sizeof(pedina_t)*NPEDINE);
-    blanks_t* copiablanks = (blanks_t*)malloc(sizeof(blanks_t)*field->nblanks);
+    pedina_t* copiapedine =  malloc (sizeof(pedina_t)*NPEDINE);
+    blanks_t* copiablanks = malloc(sizeof(blanks_t)*field->nblanks);
     int i,z;
     for(i=0;i<NPEDINE;i++){
         copiapedine[i]=field->pedine[i];
@@ -1213,9 +1212,8 @@ pair_t cpu_turn(field_t *field){
         field->pedine[z]=copiapedine[z];
         if(z<field->nblanks)
             field->blanks[z]=copiablanks[z];
-    }*/
-    pair_t sol=cpu_pedina(campo,10,BLACK);
-    /* field->pedine = copia; */
+    }
+
     return sol;
 }
 
