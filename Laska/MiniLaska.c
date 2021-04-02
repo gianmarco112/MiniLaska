@@ -1359,50 +1359,44 @@ void start_game2(field_t *field){
 }
 int main() {
     pair_t mossacpu;
-    
+    int selezione=0;
     field_t field;
     start_game2(&field);
-    /*while(!field.partita.END_OF_PLAY){
-        print_pedine(&field);
-    stampa_field(&field);
-    mossacpu =cpu_turn(&field);
-    spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
-    printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
-    print_pedine(&field);
-    stampa_field(&field);
-    movable(WHITE,&field);
-    if(field.partita.END_OF_PLAY)
-        break;
-    sel_pedina(WHITE,&field);
+    printf("1: 1vsCPU/n 2: 1vs1 /n");
+    scanf("%d",selezione);
+    if(selezione){
+        while(!field.partita.END_OF_PLAY){
+            print_pedine(&field);
+            stampa_field(&field);
+            movable(BLACK,&field);
+            if(field.partita.END_OF_PLAY)
+                break;
+            mossacpu =cpu_turn(&field);
+            print_pedine(&field);
+            spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
+            printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
+            print_pedine(&field);
+            stampa_field(&field);
+            movable(WHITE,&field);
+            if(field.partita.END_OF_PLAY)
+                break;
+            sel_pedina(WHITE,&field);
+        }
     }
-    */
-
-    while(!field.partita.END_OF_PLAY){
-        print_pedine(&field);
+    if(selezione==2){
+        while(!field.partita.END_OF_PLAY){
+            print_pedine(&field);
         stampa_field(&field);
-        mossacpu =cpu_turn(&field);
-        print_pedine(&field);
-        spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
-        printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
+        movable(BLACK,&field);
+        if(field.partita.END_OF_PLAY)
+            break;
+        sel_pedina(BLACK,&field);
         print_pedine(&field);
         stampa_field(&field);
         movable(WHITE,&field);
-        if(field.partita.END_OF_PLAY)
-            break;
         sel_pedina(WHITE,&field);
+        }
     }
-    /* while(!field.partita.END_OF_PLAY){
-        print_pedine(&field);
-       stampa_field(&field);
-       movable(BLACK,&field);
-       if(field.partita.END_OF_PLAY)
-           break;
-       sel_pedina(BLACK,&field);
-       print_pedine(&field);
-       stampa_field(&field);
-       movable(WHITE,&field);
-       sel_pedina(WHITE,&field);
-    } */
     free_pedine(&field);
     return 0;
 }
