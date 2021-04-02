@@ -1227,14 +1227,14 @@ void fixbugs(field_t *field){
                     contBottom++;
                 }
             }
-            if(!contBottom){
+            if(!contBottom){/*Se non ha trovato una bottom*/
                 
-                for(j=0; j<NPEDINE; j++){
+                for(j=0; j<NPEDINE; j++){/*Cerco una bottom senza top*/
                     int control2=0;
                     if(field->pedine[j].altezza==BOTTOM){
                         coordBOTTOM=field->pedine[i].coord;
-                        for(k=0; k<NPEDINE && contBottom == 0; k++){
-                            if(j!=k&&field->pedine[j].coord.x==coordBOTTOM.x&&field->pedine[j].coord.y==coordBOTTOM.y){
+                        for(k=0; k<NPEDINE; k++){
+                            if(j!=k&&field->pedine[k].coord.x==coordBOTTOM.x&&field->pedine[k].coord.y==coordBOTTOM.y){
                                 control2++;
                                 break;
                             }
