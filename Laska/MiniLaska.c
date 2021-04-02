@@ -466,8 +466,8 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
     if(field->pedine[index].is_obbligata){
         
         int indexM=-1;
-        int i,j=0,k=0;
-        int control=0;/*Serve per il controllo dell'altezza delle pedine*/
+        int i;
+        /*int control=0,k=0,j=0;Serve per il controllo dell'altezza delle pedine*/
         for(i=0;i<NPEDINE;i++){
             /*Ricavo l'indice della pedina da mangiare, 
             prendo il minore tra le cordinate e ci aggiungo uno per trovare la pedina di mezzo*/
@@ -1128,7 +1128,7 @@ pair_t cpu_mossa(field_t field,int index, int depth,enum color colore){
 
 pair_t cpu_pedina(field_t field,int depth,enum color colore){
     
-    int index, indexb,i, k=0,c=0;
+    int i, k=0;
     int inizio,fine,massimo=0, indicemassimo=0;
     /* stampa_field(&field);
     printf("\n");
@@ -1172,9 +1172,8 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
         }
     }
     if(k==0){
-        
-        printf("Errore max\n");
         pair_t res;
+        printf("Errore max\n");
         res.score = -3;
         res.indexb = -1;
         res.index = -1;
@@ -1363,7 +1362,7 @@ int main() {
     field_t field;
     start_game2(&field);
     printf("1: 1vsCPU/n 2: 1vs1 /n");
-    scanf("%d",selezione);
+    scanf("%d",&selezione);
     if(selezione){
         while(!field.partita.END_OF_PLAY){
             print_pedine(&field);
