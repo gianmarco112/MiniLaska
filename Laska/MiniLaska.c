@@ -103,7 +103,7 @@ void start_game2(field_t *field);
 /*FINE LISTA DELLE FUNZIONI*/
 
 
-//int min(int a,int b){if(a<b)return a;else return b;}
+int min(int a,int b){if(a<b)return a;else return b;}
 
 void endgame(field_t *field){
 
