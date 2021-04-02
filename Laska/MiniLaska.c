@@ -695,7 +695,7 @@ void coord_to_char(field_t *field, int x, int y, char *ped){
             ped[0]=' ';
             ped[1]=' ';
             ped[2]=' ';
-            return;
+            
         }
     }
     /* bool_t singola = FALSE; */
