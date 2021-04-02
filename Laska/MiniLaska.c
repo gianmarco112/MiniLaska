@@ -1399,7 +1399,7 @@ int main() {
     int selezione=0;
     field_t field;
     start_game2(&field);
-    printf("1: 1vsCPU\n 2: 1vs1 \n");
+    printf("1: 1vsCPU\n2: 1vs1 \n");
     scanf("%d",&selezione);
     if(selezione){
         while(!field.partita.END_OF_PLAY){
