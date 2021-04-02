@@ -1140,7 +1140,7 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
     if (depth==0){
         pair_t res;
         res.score = 0;
-        res.indexb = 0;
+        res.indexb = -1;
         res.index = -1;
         return res;
     }
@@ -1171,7 +1171,16 @@ pair_t cpu_pedina(field_t field,int depth,enum color colore){
             }
         }
     }
-    if(k==0)printf("Errore max\n");
+    if(k==0){
+        
+        printf("Errore max\n");
+        pair_t res;
+        res.score = -3;
+        res.indexb = -1;
+        res.index = -1;
+        return res;
+
+    }
     massimo=max[0].score;
     for(i=0;i<k;i++){
         if(max[i].score>massimo){
