@@ -605,6 +605,27 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
                 field->pedine[i].coord.y = mossa.y;
             }
         } 
+        if(field->pedine[index].altezza==SINGLE){
+            field->pedine[index].coord.x = mossa.x;
+                field->pedine[index].coord.y = mossa.y;
+        }else if(field->pedine[index].altezza==TOP){
+            int controllo=-1;
+        for(i=0; i <NPEDINE; i++){
+            if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
+                field->pedine[i].coord.y==field->pedine[index].coord.y) {
+                if(field->pedine[i].altezza==BOTTOM)controllo=i;
+                field->pedine[i].coord.x = mossa.x;
+                field->pedine[i].coord.y = mossa.y;
+            }
+            if(i==NPEDINE-1&&controllo==-1)i=0;
+        } 
+        while(field->pedine[controllo].coord.x==field->pedine[index].coord.x&&
+                field->pedine[controllo].coord.y==field->pedine[index].coord.y){
+                    field->pedine[controllo].coord.x = mossa.x;
+                    field->pedine[controllo].coord.y = mossa.y;
+                }
+
+        }
         promossa(field,index);
         
     }
