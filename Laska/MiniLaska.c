@@ -100,6 +100,12 @@ int altezza_pedina(field_t *field, coord_t coord);
 pair_t cpu_turn(field_t *field);
 pair_t cpu_pedina(field_t field,int depth,enum color colore);
 pair_t cpu_mossa(field_t field,int index, int depth,enum color colore);
+void pedina_player(field_t* field, enum color colore);
+vect sel_pedina2(enum color colore,field_t *field);
+pair_t mossa_cpu(field_t field, enum color colore, int index, int depth);
+pair_t pedina_cpu(field_t field, enum color colore, int depth);
+int mossa_player(field_t* field,enum color colore,int index);
+vect possible_moves2(enum color colore, field_t *field,int index);
 void stampa_field(field_t *field);
 void coord_to_char(field_t *field, int x, int y, char *ped);
 void endgame(field_t *field);
@@ -447,42 +453,132 @@ vect possible_moves2(enum color colore, field_t *field,int index){
                     field->blanks[i].coord.x==field->pedine[index].coord.x-1)) {
                     sol[c]=i;
                     c++;
-                    
                 }
             }
         }
     soluzione.v=sol;
     soluzione.size=c-1;
-    
+    return soluzione;
 }
+
+/**
+ * @brief Nuova funzione per la scelta della mossa del player data la pedina da muovere
+ * 
+ * @param field 
+ * @param colore 
+ * @param index 
+ * @return int 
+ */
 int mossa_player(field_t* field,enum color colore,int index){
-    int i=0,indexb=-1;
-    vect mossa=possible_moves2(colre,field,index);
-    for(i=0;i=<mossa.size;i++){
-        printf("%d: Riga %d Colonna %d\n", c ,field->blanks[i].coord.y, field->blanks[i].coord.x);
+    int i=0,indexb=-1,selezione=-1;
+    vect mossa=possible_moves2(colore,field,index);
+    for(i=0;i<=mossa.size;i++){
+        printf("%d: Riga %d Colonna %d\n", mossa.size ,field->blanks[mossa.v[i]].coord.y, field->blanks[mossa.v[i]].coord.x);
     }
-    if(c==0){
+    if(mossa.size==0){
         printf("error \n");
     }
     printf("Dove vuoi muovere la pedina? ");
-    while(selezione==-1||selezione-1>c)   
+    while(selezione==-1||selezione-1>mossa.size)   
         scanf("%d",&selezione);
     printf("\n");
-    indexb=sol[selezione-1];
+    indexb=mossa.v[selezione-1];
     return indexb;
 }
-pair_t pedina_cpu(field_t field, enum colore){
+
+pair_t pedina_cpu(field_t field, enum color colore,int depth){
+    int i, k=0;
+    int inizio,fine,massimo=0, indicemassimo=0;
+    bool_t control=FALSE;
+    pair_t retval;
+    pair_t *max=malloc(sizeof(pair_t)*NPEDINE);
+    movable(colore,&field);
+    vect pedine=sel_pedina2(colore,&field);
+    if (depth==0){
+        pair_t res;
+        res.score = 0;
+        res.indexb = -1;
+        res.index = -1;
+        return res;
+    }
+    for(i=0;i<=pedine.size;i++){
+        max[k]=mossa_cpu(field,colore,pedine.v[i],depth);
+        max[k].index=pedine.v[i];
+        k++;
+    }
+    if(k==0){
+        pair_t res;
+        printf("Errore max\n");
+        res.score = -3;
+        res.indexb = -1;
+        res.index = -1;
+        return res;
+
+    }
+    massimo=max[0].score;
+    for(i=0;i<k;i++){
+        if(max[i].score>massimo){
+            massimo=max[i].score;
+            indicemassimo = i;
+        }
+    }
+    
+    return max[indicemassimo];
 
 }
-pair_t mossa_cpu(field_t field, enum colore, int index){
-    int i=0,indexb=-1;+
+pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
+    int i=0,z,countersol=0,indexb=-1,npedine1, npedineAvv1,npedine2,npedineAvv2,npromosse1, npromosse2,npromosseAvv1,npromosseAvv2,posy,inizio,fine;
     pair_t sol[NPEDINE];
-    vect mossa=possible_moves2(colre,field,index);
-    for(i=0;i=<mossa.size;i++){
+    pair_t res;
+    pair_t retval;
+    pedina_t* copiapedine = (pedina_t*)malloc(sizeof(pedina_t)*NPEDINE);
+    blanks_t* copiablanks = (blanks_t*)malloc(sizeof(blanks_t)*field.nblanks);
+    int nblanks=field.nblanks;
+    vect mossa=sel_pedina2(colore,&field);/*Vettore con tutte le possibili pedine*/
+    if (depth==0){
+        res.score = 0;
+        res.indexb = 0;
+        return res;
+    }
+    for(i=0;i<NPEDINE;i++){
+        copiapedine[i]=field.pedine[i];
+        if(i<field.nblanks)
+            copiablanks[i]=field.blanks[i];
+    }
+    npedine1=n_pedine(&field,BLACK);
+    npedineAvv1=n_pedine(&field,WHITE);
+    npromosse1=n_promosse(&field,BLACK);
+    npromosseAvv1=n_promosse(&field,WHITE);
+    
+    for(i=0;i<=mossa.size;i++){
+        
+        spostamento_pedine(&field, colore,index,mossa.v[i]);
+        res=pedina_cpu(field,!colore,depth-1);
+        sol[countersol].index=index;
+        sol[countersol].score=res.score;
+        sol[countersol].indexb=res.indexb;
+        npedine2=n_pedine(&field,BLACK);
+        npedineAvv2=n_pedine(&field,WHITE);
+        npromosse2=n_promosse(&field,BLACK);
+        npromosseAvv2=n_promosse(&field,WHITE);
+        /*Assegnamento del punteggio*/
+        if(npedine1<npedine2)sol[countersol].score++;
+            else if(npedine1>npedine2)sol[countersol].score--;
+        if(npedineAvv1>npedineAvv2)sol[countersol].score++;
+            else if(npedineAvv1<npedineAvv2)sol[countersol].score--;
+        if(npromosse1<npromosse2)sol[countersol].score++;
+            else if(npromosse1>npromosse2)sol[countersol].score--;
+         if(npromosseAvv1>npromosseAvv2)sol[countersol].score++;
+            else if(npromosseAvv1< npromosseAvv2)sol[countersol].score--;
+        countersol++;
         /*Annullamento mossa*/
-        spostamento_pedine(field, colore,index,mossa.v[i]);
-        /*Annullamento mossa*/
-        pedina_cpu(field, colore);
+        field.nblanks=nblanks;
+        for(z=0;z<NPEDINE;z++){
+            field.pedine[z]=copiapedine[z];
+            if(z<field.nblanks)
+                field.blanks[z]=copiablanks[z];
+        }
+        
     }
     
 }
@@ -549,12 +645,20 @@ void sel_pedina(enum color colore,field_t *field){
     indexb=possible_moves(colore, field, index);
     spostamento_pedine(field,colore,index,indexb);
 }
-void sel_pedina2(enum color colore,field_t *field){
+/**
+ * @brief 
+ * 
+ * @param colore 
+ * @param field 
+ */
+vect sel_pedina2(enum color colore,field_t *field){
     int i, index=NPEDINE+1,indexb,isol=0;
     int inizio,fine;
     bool_t control=FALSE;
     int sol[20];
+    vect soluzione;
     int c=0;
+    soluzione.obbligata=FALSE;
     if(colore){
         inizio=0;
         fine=NPEDINE/2;
@@ -567,7 +671,7 @@ void sel_pedina2(enum color colore,field_t *field){
         if(field->pedine[i].is_obbligata){
             sol[c]=i;
             c++;
-            
+            soluzione.obbligata=TRUE;
             control=TRUE;
         }
     }  
@@ -581,18 +685,28 @@ void sel_pedina2(enum color colore,field_t *field){
             }
         }
     }
-    
-        
+    soluzione.size=c-1;
+    soluzione.v=sol;
+    return soluzione;
 }
-/*
-printf("%d: Riga %d Colonna %d Obbligata a mangiare\n",c,field->pedine[i].coord.y,field->pedine[i].coord.x);
-printf("%d: Riga %d Colonna %d \n",c,field->pedine[i].coord.y,field->pedine[i].coord.x);
-while (index==NPEDINE+1){
+
+void pedina_player(field_t* field, enum color colore){
+    int i,index=NPEDINE+1,isol=-1,indexb;
+    vect selezione;
+    selezione=sel_pedina2(colore,field);
+    for(i=0;i<=selezione.size;i++){
+        if(selezione.obbligata){
+            printf("%d: Riga %d Colonna %d Obbligata a mangiare\n",selezione.size,field->pedine[selezione.v[i]].coord.y,field->pedine[selezione.v[i]].coord.x);
+        }else{
+            printf("%d: Riga %d Colonna %d \n",selezione.size,field->pedine[selezione.v[i]].coord.y,field->pedine[selezione.v[i]].coord.x);
+        }
+    }
+    while (index==NPEDINE+1){
             printf("Quale pedina vuoi muovere: ");
                 scanf("%d",&isol);
-                index=sol[isol-1];
+                index=selezione.v[isol-1];
                 printf("\n");
-            if(isol>c||isol<1){
+            if(isol>selezione.size||isol<1){
                 printf("errore nell'inserimento \n");
                 index=NPEDINE+1;
             }
@@ -602,10 +716,10 @@ while (index==NPEDINE+1){
                 index=NPEDINE+1;
             }
         
-        }
-    indexb=possible_moves(colore, field, index);
+    }
+    indexb=mossa_player(colore, field, index);
     spostamento_pedine(field,colore,index,indexb);
-*/
+}
 /**
  * @brief Funzione che si occupa di gestire lo spostamento delle pedine dopo la selezione della mossa
  *        Funcion responsable for swapping pawns after the user/computer selection
@@ -931,6 +1045,14 @@ typedef struct pair_int{
     int indexb;
 }pair_t;
 */
+
+/**
+ * @brief 
+ * 
+ * @param field 
+ * @param colore 
+ * @return int 
+ */
 int n_pedine(field_t *field, enum color colore){
     int inizio,fine, i;
     int num=0;
