@@ -399,17 +399,19 @@ vect possible_moves2(enum color colore, field_t *field,int index){
     int sol[20];
     /*Ho un array di coordinate delle possibili mosse che vengono proposte all'utente*/
     vect soluzione;
-    soluzione.obbligata=FALSE;
+    
     int col;
         if(colore){
             col=1;
         }else{
             col=-1;
         }
+    soluzione.obbligata=FALSE;
     /*Se la pedina che devo muovere is_obbligata*/
     if(field->pedine[index].is_obbligata){
-    soluzione.obbligata=TRUE;
+    
     int i,j,inizio,fine;
+    soluzione.obbligata=TRUE;
     if(!colore){
             inizio=0;
             fine=NPEDINE/2;
@@ -492,8 +494,9 @@ pair_t pedina_cpu(field_t field, enum color colore,int depth){
     bool_t control=FALSE;
     pair_t retval;
     pair_t *max=malloc(sizeof(pair_t)*NPEDINE);
+    vect pedine;
     movable(colore,&field);
-    vect pedine=sel_pedina2(colore,&field);
+    pedine=sel_pedina2(colore,&field);
     if (depth==0){
         pair_t res;
         res.score = 0;
