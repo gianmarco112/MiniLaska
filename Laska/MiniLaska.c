@@ -720,7 +720,7 @@ void pedina_player(field_t* field, enum color colore){
             }
         
     }
-    indexb=mossa_player(colore, field, index);
+    indexb=mossa_player(field, colore, index);
     spostamento_pedine(field,colore,index,indexb);
 }
 /**
@@ -1485,12 +1485,13 @@ pair_t cpu_turn(field_t *field){
     pedina_t* copiapedine =  malloc (sizeof(pedina_t)*NPEDINE);
     blanks_t* copiablanks = malloc(sizeof(blanks_t)*field->nblanks);
     int i,z;
+    pair_t sol;
     for(i=0;i<NPEDINE;i++){
         copiapedine[i]=field->pedine[i];
         if(i<field->nblanks)
             copiablanks[i]=field->blanks[i];
             }
-    pair_t sol=pedina_cpu(campo,BLACK,10);
+    sol=pedina_cpu(campo,BLACK,10);
     for(z=0;z<NPEDINE;z++){
         field->pedine[z]=copiapedine[z];
         if(z<field->nblanks)
