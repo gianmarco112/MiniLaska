@@ -48,7 +48,11 @@ typedef struct pair_int{
     int index;
     int indexb;
 }pair_t;
-
+typedef struct vect{
+    int* v;
+    int size;
+    bool_t obbligata;
+}vect;
 typedef struct blanks{
     coord_t coord;
 }blanks_t;
@@ -383,7 +387,105 @@ int possible_moves(enum color colore, field_t *field,int index){
     indexb=sol[selezione-1];
     return indexb;
 }
+vect possible_moves2(enum color colore, field_t *field,int index){
+    int i,c=0,selezione=-1,indexb;
+    /*c è l'indice dell'array di coordinate, selezione è l'indice dello stesso array che però rappresenta la selezione dell'utente*/
+    int sol[20];
+    /*Ho un array di coordinate delle possibili mosse che vengono proposte all'utente*/
+    vect soluzione;
+    soluzione.obbligata=FALSE;
+    int col;
+        if(colore){
+            col=1;
+        }else{
+            col=-1;
+        }
+    /*Se la pedina che devo muovere is_obbligata*/
+    if(field->pedine[index].is_obbligata){
+    soluzione.obbligata=TRUE;
+    int i,j,inizio,fine;
+    if(!colore){
+            inizio=0;
+            fine=NPEDINE/2;
+        }else{
+            inizio=NPEDINE/2;
+            fine=NPEDINE;
+        }
+    for(i=inizio;i<fine;i++){
+        /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
+        if((field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP)&&field->pedine[i].colore!=field->pedine[index].colore){
+            /*Controllo quale o quali pedina/e devo mangiare*/
+            if(field->pedine[i].coord.y == field->pedine[index].coord.y+col/*Deve essere nella riga successiva*/){
+                if(field->pedine[i].coord.x==field->pedine[index].coord.x+1){/*Cerco in una diagonale*/
+                    /*Cerco gli spazi di destinazione della mia pedina*/
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
+                        sol[c]=j;
+                        c++;
+                        }
+                    }
+                }else if(field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
+                    /*Cerco gli spazi di destinazione della mia pedina*/
+                    for(j=0;j<field->nblanks;j++){
+                        if(field->blanks[j].coord.y==field->pedine[index].coord.y+col+col &&
+                        (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
+                        sol[c]=j;
+                        c++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    /*Se non ho mosse obbligatorie controllo le mosse di una casella in diagonale*/
+    }else{
+        for(i=0;i<field->nblanks;i++){
+            if(field->blanks[i].coord.y==field->pedine[index].coord.y+col&&(
+                    field->blanks[i].coord.x==field->pedine[index].coord.x+1|| 
+                    field->blanks[i].coord.x==field->pedine[index].coord.x-1)) {
+                    sol[c]=i;
+                    c++;
+                    
+                }
+            }
+        }
+    soluzione.v=sol;
+    soluzione.size=c-1;
+    
+}
+int mossa_player(field_t* field,enum color colore,int index){
+    int i=0,indexb=-1;
+    vect mossa=possible_moves2(colre,field,index);
+    for(i=0;i=<mossa.size;i++){
+        printf("%d: Riga %d Colonna %d\n", c ,field->blanks[i].coord.y, field->blanks[i].coord.x);
+    }
+    if(c==0){
+        printf("error \n");
+    }
+    printf("Dove vuoi muovere la pedina? ");
+    while(selezione==-1||selezione-1>c)   
+        scanf("%d",&selezione);
+    printf("\n");
+    indexb=sol[selezione-1];
+    return indexb;
+}
+pair_t pedina_cpu(field_t field, enum colore){
 
+}
+pair_t mossa_cpu(field_t field, enum colore, int index){
+    int i=0,indexb=-1;+
+    pair_t sol[NPEDINE];
+    vect mossa=possible_moves2(colre,field,index);
+    for(i=0;i=<mossa.size;i++){
+        /*Annullamento mossa*/
+        spostamento_pedine(field, colore,index,mossa.v[i]);
+        /*Annullamento mossa*/
+        pedina_cpu(field, colore);
+    }
+    
+}
 
 /**
  * @brief function responsable of looking for movable pedine or obliged eats and it prints the list of available ones
@@ -447,7 +549,63 @@ void sel_pedina(enum color colore,field_t *field){
     indexb=possible_moves(colore, field, index);
     spostamento_pedine(field,colore,index,indexb);
 }
+void sel_pedina2(enum color colore,field_t *field){
+    int i, index=NPEDINE+1,indexb,isol=0;
+    int inizio,fine;
+    bool_t control=FALSE;
+    int sol[20];
+    int c=0;
+    if(colore){
+        inizio=0;
+        fine=NPEDINE/2;
+    }else{
+        inizio=NPEDINE/2;
+        fine=NPEDINE;
+    }
+    /*Prima controllo se ho la possibilità di mangiare una pedina*/
+    for(i=inizio;i<fine;i++){
+        if(field->pedine[i].is_obbligata){
+            sol[c]=i;
+            c++;
+            
+            control=TRUE;
+        }
+    }  
+        /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
+    if(!control){
+        for(i=inizio;i<fine;i++){
+            if(field->pedine[i].is_movable){
+                sol[c]=i;
+                c++;
+                
+            }
+        }
+    }
+    
+        
+}
+/*
+printf("%d: Riga %d Colonna %d Obbligata a mangiare\n",c,field->pedine[i].coord.y,field->pedine[i].coord.x);
+printf("%d: Riga %d Colonna %d \n",c,field->pedine[i].coord.y,field->pedine[i].coord.x);
+while (index==NPEDINE+1){
+            printf("Quale pedina vuoi muovere: ");
+                scanf("%d",&isol);
+                index=sol[isol-1];
+                printf("\n");
+            if(isol>c||isol<1){
+                printf("errore nell'inserimento \n");
+                index=NPEDINE+1;
+            }
 
+            if(!field->pedine[index].is_movable){
+                printf("errore nell'inserimento \n");
+                index=NPEDINE+1;
+            }
+        
+        }
+    indexb=possible_moves(colore, field, index);
+    spostamento_pedine(field,colore,index,indexb);
+*/
 /**
  * @brief Funzione che si occupa di gestire lo spostamento delle pedine dopo la selezione della mossa
  *        Funcion responsable for swapping pawns after the user/computer selection
