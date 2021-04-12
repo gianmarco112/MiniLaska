@@ -1487,7 +1487,7 @@ pair_t cpu_turn(field_t *field){
         if(i<field->nblanks)
             copiablanks[i]=field->blanks[i];
             }
-    pair_t sol=cpu_pedina(campo,10,BLACK);
+    pair_t sol=pedina_cpu(campo,BLACK,10);
     for(z=0;z<NPEDINE;z++){
         field->pedine[z]=copiapedine[z];
         if(z<field->nblanks)
@@ -1703,6 +1703,28 @@ int main() {
             fixbugs(&field);
         }
     }
+    if(selezione==3){
+        while(!field.partita.END_OF_PLAY){
+            stampa_field(&field);
+            movable(BLACK,&field);
+            if(field.partita.END_OF_PLAY)
+                break;
+            mossacpu =cpu_turn(&field);
+            print_pedine(&field);
+            spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
+            printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
+            print_pedine(&field);
+            fixbugs(&field);
+            
+            stampa_field(&field);
+            movable(WHITE,&field);
+            if(field.partita.END_OF_PLAY)
+                break;
+            sel_pedina(WHITE,&field);
+            print_pedine(&field);
+            fixbugs(&field);
+        }
+    }
     if(selezione==2){
         while(!field.partita.END_OF_PLAY){
             print_pedine(&field);
@@ -1717,6 +1739,7 @@ int main() {
         sel_pedina(WHITE,&field);
         }
     }
+
     free_pedine(&field);
     return 0;
 }
