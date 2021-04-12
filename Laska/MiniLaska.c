@@ -511,7 +511,7 @@ pair_t pedina_cpu(field_t field, enum color colore,int depth){
     }
     if(k==0){
         pair_t res;
-        printf("Errore max\n");
+        if(!field.partita.END_OF_PLAY)printf("Errore end of play\n");
         res.score = -3;
         res.indexb = -1;
         res.index = -1;
