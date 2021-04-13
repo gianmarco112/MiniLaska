@@ -1720,15 +1720,15 @@ int main() {
             spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
             printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
             print_pedine(&field);
-            fixbugs(&field);
+            /*fixbugs(&field);*/
             
             stampa_field(&field);
             movable(WHITE,&field);
             if(field.partita.END_OF_PLAY)
                 break;
-            sel_pedina(WHITE,&field);
+            pedina_player(WHITE,&field);
             print_pedine(&field);
-            fixbugs(&field);
+            /*fixbugs(&field);*/
         }
     }
     if(selezione==2){
