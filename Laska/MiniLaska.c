@@ -180,7 +180,6 @@ void info(field_t *field){
  */
 void movable(enum color colore, field_t *field){
     int i,j,inizio,fine,col;
-    /*Resetto le impostazioni di movable e obbligata a FALSE*/
     
     /*Imposto la fine della partita a TRUE, e successivamente se qualche pedina si può muovere la partita non è finita*/
     field->partita.END_OF_PLAY=TRUE;
@@ -194,6 +193,7 @@ void movable(enum color colore, field_t *field){
             col=-1;
     }
     for(i=inizio;i<fine;i++){
+        /*Resetto le impostazioni di movable e obbligata a FALSE*/
         field->pedine[i].is_movable=FALSE;
         field->pedine[i].is_obbligata=FALSE;
         if(field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP){
@@ -476,7 +476,7 @@ int mossa_player(field_t* field,enum color colore,int index){
     vect mossa;
     possible_moves2(colore,field,index,&mossa);
     for(i=0;i<=mossa.size;i++){
-        printf("%d: Riga %d Colonna %d\n", mossa.size ,field->blanks[mossa.v[i]].coord.y, field->blanks[mossa.v[i]].coord.x);
+        printf("%d: Riga %d Colonna %d\n", i+1 ,field->blanks[mossa.v[i]].coord.y, field->blanks[mossa.v[i]].coord.x);
     }
     if(mossa.size==0){
         printf("error \n");
@@ -541,7 +541,7 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
     int nblanks=field.nblanks;
 	vect mossa;
     mossa.v=(int*)malloc(sizeof(int)*NPEDINE);
-    sel_pedina2(colore,&field,&mossa);/*Vettore con tutte le possibili pedine*/
+    possible_moves2(colore,&field,index,&mossa);/*Vettore con tutte le possibili pedine*/
     if (depth==0){
         res.score = 0;
         res.indexb = 0;
@@ -587,6 +587,16 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
         }
         
     }
+    if(countersol==0)printf("Errore countersol\n");
+    retval=sol[0];
+    while(countersol>0){
+        if(retval.score<sol[countersol].score)
+            retval=sol[countersol];
+        countersol--;
+    }
+    free(copiablanks);
+    free(copiapedine);
+    return retval;
     
 }
 
@@ -1495,7 +1505,7 @@ pair_t cpu_turn(field_t *field){
         copiapedine[i]=field->pedine[i];
         if(i<field->nblanks)
             copiablanks[i]=field->blanks[i];
-            }
+    }
     sol=pedina_cpu(campo,BLACK,10);
     for(z=0;z<NPEDINE;z++){
         field->pedine[z]=copiapedine[z];
@@ -1697,10 +1707,10 @@ int main() {
             if(field.partita.END_OF_PLAY)
                 break;
             mossacpu =cpu_turn(&field);
-            print_pedine(&field);
+            /*print_pedine(&field);*/
             spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
             printf("Score %d Index %d Indexb %d \n",mossacpu.score,mossacpu.index,mossacpu.indexb);
-            print_pedine(&field);
+            /*print_pedine(&field);*/
             fixbugs(&field);
             
             stampa_field(&field);
@@ -1736,7 +1746,7 @@ int main() {
     }
     if(selezione==2){
         while(!field.partita.END_OF_PLAY){
-            print_pedine(&field);
+        print_pedine(&field);
         stampa_field(&field);
         movable(BLACK,&field);
         if(field.partita.END_OF_PLAY)
