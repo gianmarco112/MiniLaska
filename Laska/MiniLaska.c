@@ -496,6 +496,7 @@ pair_t pedina_cpu(field_t field, enum color colore,int depth){
     pair_t retval;
     pair_t *max=malloc(sizeof(pair_t)*NPEDINE);
     vect pedine;
+    pedine.v=(int*)malloc(sizeof(int)*NPEDINE);
     movable(colore,&field);
     sel_pedina2(colore,&field,&pedine);
     if (depth==0){
@@ -539,6 +540,7 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
     blanks_t* copiablanks = (blanks_t*)malloc(sizeof(blanks_t)*field.nblanks);
     int nblanks=field.nblanks;
 	vect mossa;
+    mossa.v=(int*)malloc(sizeof(int)*NPEDINE);
     sel_pedina2(colore,&field,&mossa);/*Vettore con tutte le possibili pedine*/
     if (depth==0){
         res.score = 0;
@@ -692,12 +694,13 @@ void sel_pedina2(enum color colore,field_t *field,vect* soluzione){
     }
     soluzione->size=c-1;
     
-    return soluzione;
+    
 }
 
 void pedina_player(field_t* field, enum color colore){
     int i,index=NPEDINE+1,isol=-1,indexb;
     vect selezione;
+    selezione.v= (int*)malloc(sizeof(int)*NPEDINE);
     sel_pedina2(colore,field,&selezione);
     for(i=0;i<=selezione.size;i++){
         if(selezione.obbligata){
@@ -1726,7 +1729,7 @@ int main() {
             movable(WHITE,&field);
             if(field.partita.END_OF_PLAY)
                 break;
-            pedina_player(WHITE,&field);
+            pedina_player(&field,WHITE);
             print_pedine(&field);
             /*fixbugs(&field);*/
         }
