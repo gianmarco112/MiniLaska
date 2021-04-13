@@ -1685,7 +1685,7 @@ int main() {
     start_game2(&field);
     printf("1: 1vsCPU\n2: 1vs1 \n");
     scanf("%d",&selezione);
-    if(selezione){
+    if(selezione==1){
         while(!field.partita.END_OF_PLAY){
             stampa_field(&field);
             movable(BLACK,&field);
