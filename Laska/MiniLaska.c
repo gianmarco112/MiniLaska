@@ -832,7 +832,6 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
        
         if(field->pedine[indexM].in_game){
             field->pedine[indexM].coord=mossa;
-            /* field->pedine[indexM].is_movable=FALSE; */
 		}
         
         if(field->pedine[index].in_game){
@@ -856,13 +855,14 @@ void spostamento_pedine(field_t *field, enum color colore, int index, int indexb
             }
         } */
         field->pedine[index].coord=mossa;
-        if(field->pedine[index].altezza==TOP)
-        for(i=0; i <NPEDINE; i++){
+        if(field->pedine[index].altezza==TOP){
+            for(i=0; i <NPEDINE; i++){
             if(field->pedine[i].coord.x==field->pedine[index].coord.x&&
                 field->pedine[i].coord.y==field->pedine[index].coord.y) {
-                field->pedine[i].coord= field->pedine[index].coord;
+                field->pedine[i].coord= mossa;
             }
-        } 
+            } 
+        }
         
         promossa(field,index);
         
@@ -1762,15 +1762,16 @@ int main() {
             spostamento_pedine(&field,BLACK,mossacpu.index,mossacpu.indexb);
             
             print_pedine(&field);
-            /*fixbugs(&field);*/
+            fixbugs(&field);
             
             stampa_field(&field);
             movable(WHITE,&field);
             if(field.partita.END_OF_PLAY)
                 break;
             pedina_player(&field,WHITE);
+            
+            fixbugs(&field);
             print_pedine(&field);
-            /*fixbugs(&field);*/
         }
     }
     if(selezione==2){
@@ -1787,7 +1788,7 @@ int main() {
         sel_pedina(WHITE,&field);
         }
     }
-
+    printf("Grazie di aver giocato\n");
     free_pedine(&field);
     return 0;
 }
