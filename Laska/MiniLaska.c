@@ -781,9 +781,10 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
         if (field->pedine[index].altezza==TOP){
             /*Cerco le pedine sottostanti*/
             int indicebottom = -1;
+            coord_t cordind = field->pedine[index].coord;
             for (i = 0;i<NPEDINE;i++){
-                if (i!=index&&field->pedine[i].coord.x==field->pedine[index].coord.x&&
-                field->pedine[i].coord.y==field->pedine[index].coord.y){
+                if (i!=index&&field->pedine[i].coord.x==cordind.x&&
+                field->pedine[i].coord.y==cordind.y){
                     /*Sposto le pedine che compongono la torre*/
                     field->pedine[i].coord = mossa;
                     if (field->pedine[i].altezza==CENTER){
@@ -841,6 +842,7 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
 
     } else{
         int i;
+
        /*Scambio la pedina e lo spazio*/
         field->blanks[indexb].coord = field->pedine[index].coord;
         /* if(field->pedine[index].altezza==SINGLE){
@@ -854,15 +856,15 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
                 }
             }
         } */
-        field->pedine[index].coord = mossa;
+
 
         for (i = 0; i<NPEDINE; i++){
-            if (field->pedine[i].coord.x==field->pedine[index].coord.x&&
+            if (i!=index&&field->pedine[i].coord.x==field->pedine[index].coord.x&&
                 field->pedine[i].coord.y==field->pedine[index].coord.y){
                 field->pedine[i].coord = mossa;
             }
         }
-
+        field->pedine[index].coord = mossa;
 
         promossa(field, index);
 
@@ -1067,7 +1069,7 @@ void coord_to_char(field_t* field, int x, int y, char* ped){
                 } else{
                     ped[0] = 'n';
                 }
-            }                 else if (field->pedine[i].altezza==CENTER){
+            } else if (field->pedine[i].altezza==CENTER){
                 if (field->pedine[i].colore){
                     ped[1] = 'b';
                 } else{
