@@ -424,6 +424,119 @@ pair_t cpu_mossa(field_t field, int index, int depth, enum color colore){
     free(copiapedine);
     return retval;
 }
+/**
+ * @brief Date le cordinate mi restituisce l'altezza della pedina
+ *
+ * @param field
+ * @param coord
+ * @return int
+ */
+int altezza_pedina(field_t* field, coord_t coord){
+    int i, index = 0;
+    for (i = 0;i<NPEDINE;i++){
+        if (field->pedine[i].coord.y==coord.y&&
+            field->pedine[i].coord.x==coord.x){
+            index++;
+
+        }
+    }
+    return index;
+}
+/**
+ * @brief
+ *
+ * @param field
+ * @param depth
+ * @param colore
+ * @return pair_t
+ */
+pair_t cpu_pedina(field_t field, int depth, enum color colore){
+
+    int i, k = 0;
+    int inizio, fine, massimo = 0, indicemassimo = 0;
+    /* stampa_field(&field);
+    printf("\n");
+    printf("%d",depth);
+    printf("\n"); */
+    bool_t control = FALSE;
+    pair_t retval;
+    pair_t* max = malloc(sizeof(pair_t)*NPEDINE);
+    if (depth==0){
+        pair_t res;
+        res.score = 0;
+        res.indexb = -1;
+        res.index = -1;
+        return res;
+    }
+    if (!colore){/*Colore nero*/
+        inizio = NPEDINE/2;
+        fine = NPEDINE;
+    } else{
+        inizio = 0;
+        fine = NPEDINE/2;
+    }
+    movable(colore, &field);
+    /*Prima controllo se ho la possibilità di mangiare una pedina*/
+    for (i = inizio;i<fine;i++){
+        if (field.pedine[i].is_obbligata){
+            max[k] = cpu_mossa(field, i, depth, colore);
+            max[k].index = i;
+            k++;
+            control = TRUE;
+        }
+    }
+    /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
+    if (!control){
+        for (i = inizio;i<fine;i++){
+            if (field.pedine[i].is_movable){
+                max[k] = cpu_mossa(field, i, depth, colore);
+                max[k].index = i;
+                k++;
+            }
+        }
+    }
+    if (k==0){
+        pair_t res;
+        printf("Errore max\n");
+        res.score = -3;
+        res.indexb = -1;
+        res.index = -1;
+        return res;
+
+    }
+    massimo = max[0].score;
+    for (i = 0;i<k;i++){
+        if (max[i].score>massimo){
+            massimo = max[i].score;
+            indicemassimo = i;
+        }
+    }
+    retval = max[indicemassimo];
+    return retval;
+
+
+}
+pair_t cpu_turn(field_t* field){
+    field_t  campo = *field;
+
+    pedina_t* copiapedine = malloc(sizeof(pedina_t)*NPEDINE);
+    blanks_t* copiablanks = malloc(sizeof(blanks_t)*field->nblanks);
+    int i, z;
+    pair_t sol;
+    for (i = 0;i<NPEDINE;i++){
+        copiapedine[i] = field->pedine[i];
+        if (i<field->nblanks)
+            copiablanks[i] = field->blanks[i];
+    }
+    sol = cpu_pedina(campo, 10, BLACK);
+    for (z = 0;z<NPEDINE;z++){
+        field->pedine[z] = copiapedine[z];
+        if (z<field->nblanks)
+            field->blanks[z] = copiablanks[z];
+    }
+
+    return sol;
+}
 int main(){
     
    /*  if (selezione==1){
