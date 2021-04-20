@@ -326,81 +326,7 @@ void promossa(field_t* field, int index){
  * @param index
  * @return int
  */
-int possible_moves(enum color colore, field_t* field, int index){
-    int i, c = 0, selezione = -1, indexb;
-    /*c è l'indice dell'array di coordinate, selezione è l'indice dello stesso array che però rappresenta la selezione dell'utente*/
-    int sol[20];
-    /*Ho un array di coordinate delle possibili mosse che vengono proposte all'utente*/
 
-    int col;
-    if (colore){
-        col = 1;
-    } else{
-        col = -1;
-    }
-/*Se la pedina che devo muovere is_obbligata*/
-    if (field->pedine[index].is_obbligata){
-        int i, j, inizio, fine;
-        if (!colore){
-            inizio = 0;
-            fine = NPEDINE/2;
-        } else{
-            inizio = NPEDINE/2;
-            fine = NPEDINE;
-        }
-        for (i = inizio;i<fine;i++){
-            /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
-            if ((field->pedine[i].altezza==SINGLE||field->pedine[i].altezza==TOP)&&field->pedine[i].colore!=field->pedine[index].colore){
-                /*Controllo quale o quali pedina/e devo mangiare*/
-                if (field->pedine[i].coord.y==field->pedine[index].coord.y+col/*Deve essere nella riga successiva*/){
-                    if (field->pedine[i].coord.x==field->pedine[index].coord.x+1){/*Cerco in una diagonale*/
-                        /*Cerco gli spazi di destinazione della mia pedina*/
-                        for (j = 0;j<field->nblanks;j++){
-                            if (field->blanks[j].coord.y==field->pedine[index].coord.y+col+col&&
-                            (field->blanks[j].coord.x==field->pedine[index].coord.x+2)){
-                                sol[c] = j;
-                                c++;
-                                printf("%d: Riga %d Colonna %d\n", c, field->blanks[j].coord.y, field->blanks[j].coord.x);
-                            }
-                        }
-                    } else if (field->pedine[i].coord.x==field->pedine[index].coord.x-1){/*Cerco nell'altra diagonale*/
-                        /*Cerco gli spazi di destinazione della mia pedina*/
-                        for (j = 0;j<field->nblanks;j++){
-                            if (field->blanks[j].coord.y==field->pedine[index].coord.y+col+col&&
-                            (field->blanks[j].coord.x==field->pedine[index].coord.x-2)){
-                                sol[c] = j;
-                                c++;
-                                printf("%d: Riga %d Colonna %d\n", c, field->blanks[j].coord.y, field->blanks[j].coord.x);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        /*Se non ho mosse obbligatorie controllo le mosse di una casella in diagonale*/
-    } else{
-        for (i = 0;i<field->nblanks;i++){
-            if (field->blanks[i].coord.y==field->pedine[index].coord.y+col&&(
-                field->blanks[i].coord.x==field->pedine[index].coord.x+1||
-                field->blanks[i].coord.x==field->pedine[index].coord.x-1)){
-                sol[c] = i;
-                c++;
-                printf("%d: Riga %d Colonna %d\n", c, field->blanks[i].coord.y, field->blanks[i].coord.x);
-            }
-        }
-    }
-
-    if (c==0){
-        printf("error \n");
-    }
-    printf("Dove vuoi muovere la pedina? ");
-    while (selezione==-1||selezione-1>c)
-        scanf("%d", &selezione);
-    printf("\n");
-    indexb = sol[selezione-1];
-    return indexb;
-}
 void possible_moves2(enum color colore, field_t* field, int index, vect* soluzione){
     int i, c = 0;
     /*c è l'indice dell'array di coordinate, selezione è l'indice dello stesso array che però rappresenta la selezione dell'utente*/
@@ -927,62 +853,7 @@ char* coord_to_pedina(field_t* field, coord_t cor){
  * @param colore
  * @param field
  */
-void sel_pedina(enum color colore, field_t* field){
-    int i, index = NPEDINE+1, indexb, isol = 0;
-    int inizio, fine;
-    bool_t control = FALSE;
-    int sol[20];
-    int c = 0;
-    if (colore){
-        inizio = 0;
-        fine = NPEDINE/2;
-    } else{
-        inizio = NPEDINE/2;
-        fine = NPEDINE;
-    }
-    /*Prima controllo se ho la possibilità di mangiare una pedina*/
-    for (i = inizio;i<fine;i++){
-        if (field->pedine[i].is_obbligata){
-            sol[c] = i;
-            c++;
-            printf("%d: Riga %d Colonna %d Obbligata a mangiare\n", c, field->pedine[i].coord.y, field->pedine[i].coord.x);
-            control = TRUE;
-        }
-    }
-        /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
-    if (!control){
-        for (i = inizio;i<fine;i++){
-            if (field->pedine[i].is_movable){
-                sol[c] = i;
-                c++;
-                printf("%d: Riga %d Colonna %d \n", c, field->pedine[i].coord.y, field->pedine[i].coord.x);
-            }
-        }
-    }
 
-    while (index==NPEDINE+1){
-        printf("Quale pedina vuoi muovere: ");
-        scanf("%d", &isol);
-        index = sol[isol-1];
-        printf("\n");
-    /*Controllo l'input*/
-        if (isol>c||isol<1){
-            printf("errore nell'inserimento \n");
-            index = NPEDINE+1;
-        }
-
-        if (!field->pedine[index].is_movable){
-            printf("errore nell'inserimento \n");
-            index = NPEDINE+1;
-        }
-
-    }
-
-/*Procedo con la decisione della mossa*/
-
-    indexb = possible_moves(colore, field, index);
-    spostamento_pedine(field, colore, index, indexb);
-}
 
 /**
  * @brief Date le cordinate restituisce l'indice della pedina in quel punto, torna -1 se non ci sono pedine
