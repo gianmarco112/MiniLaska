@@ -803,7 +803,7 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
                 }
             }
 
-            field->pedine[index].coord = mossa;
+
             if (indicebottom!=-1&&field->pedine[indicebottom].altezza!=BOTTOM){
                 field->pedine[indexM].altezza = BOTTOM;
                 field->pedine[indexM].coord = mossa;
@@ -1755,24 +1755,18 @@ int main(){
         while (!field.partita.END_OF_PLAY){
             stampa_field(&field);
             movable(BLACK, &field);
-            if (field.partita.END_OF_PLAY)
-                break;
+            if (field.partita.END_OF_PLAY){
+                printf("Vince il giocatore\n");
+            }
             mossacpu = turn_cpu(&field);
-            print_pedine(&field);
             printf("Score %d Index %d Indexb %d \n", mossacpu.score, mossacpu.index, mossacpu.indexb);
             spostamento_pedine(&field, BLACK, mossacpu.index, mossacpu.indexb);
-
-            print_pedine(&field);
-            fixbugs(&field);
-
             stampa_field(&field);
             movable(WHITE, &field);
-            if (field.partita.END_OF_PLAY)
-                break;
+            if (field.partita.END_OF_PLAY){
+                printf("Vince il computer\n");
+            }
             pedina_player(&field, WHITE);
-
-            fixbugs(&field);
-            print_pedine(&field);
         }
     }
     if (selezione==2){
