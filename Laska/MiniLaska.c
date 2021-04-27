@@ -317,6 +317,56 @@ void promossa(field_t* field, int index){
         field->pedine[index].promossa = NO;
     }
 }
+
+/**
+ * @brief Funzione che riempie un vettore di tutte le possibili pedine che si possono spostare del colore passato per parametro
+ *
+ * @param colore
+ * @param field
+ * @param soluzione
+ */
+void sel_pedina2(enum color colore, field_t* field, vect* soluzione){
+    int i;
+    int inizio, fine;
+    bool_t control = FALSE;
+
+
+    int c = 0;
+    soluzione->obbligata = FALSE;
+    if (colore){
+        inizio = 0;
+        fine = NPEDINE / 2;
+    } else{
+        inizio = NPEDINE / 2;
+        fine = NPEDINE;
+    }
+    /*Prima controllo se ho la possibilità di mangiare una pedina*/
+    for (i = inizio;i < fine;i++){
+        if (field->pedine[i].is_obbligata){
+            soluzione->v[c] = i;
+            c++;
+            soluzione->obbligata = TRUE;
+            control = TRUE;
+        }
+    }
+        /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
+    if (!control){
+        for (i = inizio;i < fine;i++){
+            if (field->pedine[i].is_movable){
+                soluzione->v[c] = i;
+                c++;
+
+            }
+        }
+    }
+    if (c == 0)
+        printf("Errore size pedine\n");
+
+    soluzione->size = c - 1;
+
+
+}
+
 /**
  * @brief Prende in input il colore del giocatore, il campo di gioco e l'indice della pedina da muovere e print le possibili mosse di quella pedina
  * Viene chiamata dalla funzione sel_pedina
@@ -427,7 +477,6 @@ void pedina_player(field_t* field, enum color colore){
     selezione.v = (int*) malloc(sizeof(int) * NPEDINE);
     movable(colore, field);
     sel_pedina2(colore, field, &selezione);
-    if (selezione.size == 0)return;
     for (i = 0;i <= selezione.size;i++){
         if (selezione.obbligata){
             printf("%d: Riga %d Colonna %d Obbligata a mangiare\n", i + 1, field->pedine[selezione.v[i]].coord.y, field->pedine[selezione.v[i]].coord.x);
@@ -499,7 +548,7 @@ pair_t turn_cpu(field_t* field){
         if (i < field->nblanks)
             copiablanks[i] = field->blanks[i];
     }
-    sol = pedina_cpu(campo, BLACK, 10);
+    sol = pedina_cpu(campo, BLACK, 6);
     for (z = 0;z < NPEDINE;z++){
         field->pedine[z] = copiapedine[z];
         if (z < field->nblanks)
@@ -542,6 +591,13 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
         return res;
     }
     sel_pedina2(colore, &field, &pedine);
+    if (pedine.size == -1){
+        pair_t res;
+        res.score = 0;
+        res.indexb = -1;
+        res.index = -1;
+        return res;
+    }
     for (i = 0;i <= pedine.size;i++){
         max[k] = mossa_cpu(field, colore, pedine.v[i], depth);
         max[k].index = pedine.v[i];
@@ -650,56 +706,6 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
 
 }
 
-
-/**
- * @brief Funzione che riempie un vettore di tutte le possibili pedine che si possono spostare del colore passato per parametro
- *
- * @param colore
- * @param field
- * @param soluzione
- */
-void sel_pedina2(enum color colore, field_t* field, vect* soluzione){
-    int i;
-    int inizio, fine;
-    bool_t control = FALSE;
-
-
-    int c = 0;
-    soluzione->obbligata = FALSE;
-    if (colore){
-        inizio = 0;
-        fine = NPEDINE / 2;
-    } else{
-        inizio = NPEDINE / 2;
-        fine = NPEDINE;
-    }
-    /*Prima controllo se ho la possibilità di mangiare una pedina*/
-    for (i = inizio;i < fine;i++){
-        if (field->pedine[i].is_obbligata){
-            soluzione->v[c] = i;
-            c++;
-            soluzione->obbligata = TRUE;
-            control = TRUE;
-        }
-    }
-        /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
-    if (!control){
-        for (i = inizio;i < fine;i++){
-            if (field->pedine[i].is_movable){
-                soluzione->v[c] = i;
-                c++;
-
-            }
-        }
-    }
-    if (c == 0){
-        printf("Errore size pedine\n");
-        soluzione->size = 0;
-    } else
-        soluzione->size = c - 1;
-
-
-}
 
 
 /**
