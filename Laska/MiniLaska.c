@@ -223,6 +223,15 @@ void movable(enum color colore, field_t* field){
         }
 
     }
+    /*if (!field->partita.END_OF_PLAY){
+        bool_t ok = FALSE;
+        for (i = 0;i < NPEDINE;i++){
+            if (field->pedine->is_movable){
+                ok = TRUE;
+            }
+        }
+        field->partita.END_OF_PLAY = ok;
+    }*/
 }
 
 /**
@@ -270,7 +279,7 @@ void obbligata(field_t* field, int index, enum color colore){
                         }
                     }
                 }
-            }if (field->pedine[index].promossa == YES){
+            }if (field->pedine[index].promossa){
                 if (field->pedine[i].coord.y == field->pedine[index].coord.y - col/*Deve essere nella riga successiva*/){
                     if (field->pedine[i].coord.x == field->pedine[index].coord.x + 1){/*Cerco in una diagonale*/
                         /*Cerco gli spazi di destinazione della mia pedina*/
@@ -297,6 +306,7 @@ void obbligata(field_t* field, int index, enum color colore){
             }
 
         } else{
+            /*Nel caso non sia la pedina top o singola resetto il suo stato di promozione*/
             field->pedine[i].promossa = NO;
         }
     }
@@ -390,6 +400,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
     } else{
         col = -1;
     }
+    soluzione->size = 0;
     soluzione->obbligata = FALSE;
     /*Se la pedina che devo muovere is_obbligata*/
     if (field->pedine[index].is_obbligata){
@@ -464,16 +475,29 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
                 soluzione->v[c] = i;
                 c++;
             }
+            if (field->pedine[i].promossa){
+                if (field->blanks[i].coord.y == field->pedine[index].coord.y - col && (
+                    field->blanks[i].coord.x == field->pedine[index].coord.x + 1 ||
+                    field->blanks[i].coord.x == field->pedine[index].coord.x - 1)){
+                    soluzione->v[c] = i;
+                    c++;
+                }
+            }
         }
     }
-    if (c == 0)printf("Errore size\n");
-
+    if (c == 0){
+        printf("Errore size possible moves\n");
+        printf("index = %d\n", index);
+        printf("movable %d\n", field->pedine[index].is_movable);
+    }
     soluzione->size = c;
 
 }
 void pedina_player(field_t* field, enum color colore){
     int i, index = NPEDINE + 1, isol = -1, indexb;
     vect selezione;
+    selezione.size = 0;
+    selezione.obbligata = FALSE;
     selezione.v = (int*) malloc(sizeof(int) * NPEDINE);
     movable(colore, field);
     sel_pedina2(colore, field, &selezione);
@@ -516,7 +540,7 @@ int mossa_player(field_t* field, enum color colore, int index){
     vect mossa;
     mossa.v = (int*) malloc(sizeof(int) * NPEDINE);
     possible_moves2(colore, field, index, &mossa);
-    if (mossa.size = 0){
+    if (mossa.size == 0){
         printf("error size mossa player\n");
     }
     for (i = 0;i < mossa.size;i++){
@@ -544,6 +568,9 @@ pair_t turn_cpu(field_t* field){
     blanks_t* copiablanks = malloc(sizeof(blanks_t) * field->nblanks);
     int i, z;
     pair_t sol;
+    sol.index = -3;
+    sol.indexb = -3;
+    sol.score = 0;
     for (i = 0;i < NPEDINE;i++){
         copiapedine[i] = field->pedine[i];
         if (i < field->nblanks)
@@ -574,8 +601,10 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
     pair_t retval;
     pair_t* max = malloc(sizeof(pair_t) * NPEDINE);
     vect pedine;
+    pedine.size = 0;
     pedine.v = (int*) malloc(sizeof(int) * NPEDINE);
     movable(colore, &field);
+    /*Se la movable non trova pedine che si possono muovere imposta lo stato di END_OF_PLAY su true*/
     if (field.partita.END_OF_PLAY){
         pair_t res;
         res.score = -3;
@@ -594,6 +623,7 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
     sel_pedina2(colore, &field, &pedine);
     if (pedine.size == 0){
         pair_t res;
+        printf("Errore size pedine\n");
         res.score = 0;
         res.indexb = -1;
         res.index = -1;
@@ -643,17 +673,23 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
     pedina_t* copiapedine = (pedina_t*) malloc(sizeof(pedina_t) * NPEDINE);
     blanks_t* copiablanks = (blanks_t*) malloc(sizeof(blanks_t) * field.nblanks);
     int nblanks = field.nblanks;
+    /*Creazione di mossa e allocamento di memoria dell'array*/
     vect mossa;
+    mossa.size = 0;
     mossa.v = (int*) malloc(sizeof(int) * NPEDINE);
+    /*Evento impossibile in quanto dovrebbe fermarsi prima*/
     if (depth == 0 || field.partita.END_OF_PLAY){
         res.score = 0;
         res.indexb = 0;
         return res;
     }
     possible_moves2(colore, &field, index, &mossa);/*Vettore con tutte le possibili pedine*/
-    if (mossa.size == 0){
+    /*Se la size è zero significa che c'è stato un errore,
+    in quanto se una pedina si può muovere deve avere necessariamente delle mosse*/
+    if (mossa.size == 0 && !field.partita.END_OF_PLAY){
         printf("Error size mossa cpu\n");
     }
+    /*Salvo lo stato attuale delle pedine e degli spazi*/
     for (i = 0;i < NPEDINE;i++){
         copiapedine[i] = field.pedine[i];
         if (i < field.nblanks)
