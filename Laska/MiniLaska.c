@@ -342,6 +342,7 @@ void sel_pedina2(enum color colore, field_t* field, vect* soluzione){
 
 
     int c = 0;
+    movable(colore, field);
     soluzione->obbligata = FALSE;
     if (colore){
         inizio = 0;
@@ -395,11 +396,13 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
 
 
     int col;
+
     if (colore){
         col = 1;
     } else{
         col = -1;
     }
+    if (field->partita.END_OF_PLAY)printf("END\n");
     soluzione->size = 0;
     soluzione->obbligata = FALSE;
     /*Se la pedina che devo muovere is_obbligata*/
@@ -416,8 +419,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
         }
         for (i = inizio;i < fine;i++){
             /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
-            if ((field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP) &&
-                (field->pedine[i].colore != field->pedine[index].colore)){
+            if ((field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP)){
                 /*Controllo quale o quali pedina/e devo mangiare*/
                 if (field->pedine[i].coord.y == field->pedine[index].coord.y + col/*Deve essere nella riga successiva*/){
                     if (field->pedine[i].coord.x == field->pedine[index].coord.x + 1){/*Cerco in una diagonale*/
@@ -427,6 +429,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
                             (field->blanks[j].coord.x == field->pedine[index].coord.x + 2)){
                                 soluzione->v[c] = j;
                                 c++;
+                                soluzione->size++;
                             }
                         }
                     } else if (field->pedine[i].coord.x == field->pedine[index].coord.x - 1){/*Cerco nell'altra diagonale*/
@@ -436,11 +439,12 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
                             (field->blanks[j].coord.x == field->pedine[index].coord.x - 2)){
                                 soluzione->v[c] = j;
                                 c++;
+                                soluzione->size++;
                             }
                         }
                     }
                 }
-                if (field->pedine[i].promossa){
+                if (field->pedine[index].promossa){
                     if (field->pedine[i].coord.y == field->pedine[index].coord.y - col/*Deve essere nella riga successiva*/){
                         if (field->pedine[i].coord.x == field->pedine[index].coord.x + 1){/*Cerco in una diagonale*/
                             /*Cerco gli spazi di destinazione della mia pedina*/
@@ -449,6 +453,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
                                 (field->blanks[j].coord.x == field->pedine[index].coord.x + 2)){
                                     soluzione->v[c] = j;
                                     c++;
+                                    soluzione->size++;
                                 }
                             }
                         } else if (field->pedine[i].coord.x == field->pedine[index].coord.x - 1){/*Cerco nell'altra diagonale*/
@@ -458,6 +463,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
                                 (field->blanks[j].coord.x == field->pedine[index].coord.x - 2)){
                                     soluzione->v[c] = j;
                                     c++;
+                                    soluzione->size++;
                                 }
                             }
                         }
@@ -474,13 +480,15 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
                 field->blanks[i].coord.x == field->pedine[index].coord.x - 1)){
                 soluzione->v[c] = i;
                 c++;
+                soluzione->size++;
             }
-            if (field->pedine[i].promossa){
+            if (field->pedine[index].promossa){
                 if (field->blanks[i].coord.y == field->pedine[index].coord.y - col && (
                     field->blanks[i].coord.x == field->pedine[index].coord.x + 1 ||
                     field->blanks[i].coord.x == field->pedine[index].coord.x - 1)){
                     soluzione->v[c] = i;
                     c++;
+                    soluzione->size++;
                 }
             }
         }
@@ -490,7 +498,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
         printf("index = %d\n", index);
         printf("movable %d\n", field->pedine[index].is_movable);
     }
-    soluzione->size = c;
+
 
 }
 void pedina_player(field_t* field, enum color colore){
@@ -630,6 +638,10 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
         return res;
     }
     for (i = 0;i < pedine.size;i++){
+        max[k].index = -3;
+        max[k].indexb = -3;
+        max[k].score = -3;
+
         max[k] = mossa_cpu(field, colore, pedine.v[i], depth);
         max[k].index = pedine.v[i];
         k++;
@@ -683,18 +695,19 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
         res.indexb = 0;
         return res;
     }
-    possible_moves2(colore, &field, index, &mossa);/*Vettore con tutte le possibili pedine*/
-    /*Se la size è zero significa che c'è stato un errore,
-    in quanto se una pedina si può muovere deve avere necessariamente delle mosse*/
-    if (mossa.size == 0 && !field.partita.END_OF_PLAY){
-        printf("Error size mossa cpu\n");
-    }
     /*Salvo lo stato attuale delle pedine e degli spazi*/
     for (i = 0;i < NPEDINE;i++){
         copiapedine[i] = field.pedine[i];
         if (i < field.nblanks)
             copiablanks[i] = field.blanks[i];
     }
+    possible_moves2(colore, &field, index, &mossa);/*Vettore con tutte le possibili pedine*/
+    /*Se la size è zero significa che c'è stato un errore,
+    in quanto se una pedina si può muovere deve avere necessariamente delle mosse*/
+    if (mossa.size == 0 && !field.partita.END_OF_PLAY){
+        printf("Error size mossa cpu\n");
+    }
+
     npedine1 = n_pedine(&field, BLACK);
     npedineAvv1 = n_pedine(&field, WHITE);
     npromosse1 = n_promosse(&field, BLACK);
@@ -705,6 +718,9 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
         spostamento_pedine(&field, colore, index, mossa.v[i]);
         if (!colore)turno = WHITE;
         else turno = BLACK;
+        sol[countersol].index = -3;
+        sol[countersol].score = -3;
+        sol[countersol].indexb = -3;
         res = pedina_cpu(field, turno, depth - 1);
         sol[countersol].index = index;
         sol[countersol].score = res.score;
