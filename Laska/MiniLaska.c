@@ -497,6 +497,12 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
 
 
 }
+/**
+ * @brief Funzione che gestisce la decisione della pedina da spostare
+ * 
+ * @param field 
+ * @param colore 
+ */
 void pedina_player(field_t* field, enum color colore){
     int i, index = NPEDINE + 1, isol = -1, indexb;
     vect selezione;
