@@ -115,7 +115,13 @@ void endgame(field_t* field);
 void start_game(field_t* field);
 /*FINE LISTA DELLE FUNZIONI*/
 
-
+/**
+ * @brief Funzione che restituisce il minimo tra due numeri
+ *
+ * @param a
+ * @param b
+ * @return int
+ */
 int min(int a, int b){ if (a < b)return a;else return b; }
 
 void endgame(field_t* field){
@@ -507,12 +513,12 @@ void pedina_player(field_t* field, enum color colore){
     int i, index = NPEDINE + 1, isol = -1, indexb;
     vect selezione;
     selezione.size = 0;
-    selezione->is_obbligata = FALSE;
+    selezione.is_obbligata = FALSE;
     selezione.v = (int*) malloc(sizeof(int) * NPEDINE);
     movable(colore, field);
     sel_pedina2(colore, field, &selezione);
     for (i = 0;i < selezione.size;i++){
-        if (selezione->is_obbligata){
+        if (selezione.is_obbligata){
             printf("%d: Riga %d Colonna %d Obbligata a mangiare\n", i + 1, field->pedine[selezione.v[i]].coord.y, field->pedine[selezione.v[i]].coord.x);
         } else{
             printf("%d: Riga %d Colonna %d \n", i + 1, field->pedine[selezione.v[i]].coord.y, field->pedine[selezione.v[i]].coord.x);
