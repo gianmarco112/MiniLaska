@@ -255,7 +255,8 @@ void obbligata(field_t* field, int index, enum color colore){
     }
     for (i = inizio;i < fine;i++){
         /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
-        if (field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP){
+        if ((field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP) &&
+            field->pedine[i].colore != field->pedine[index].colore){
             /*Controllo quale o quali pedina/e devo mangiare*/
             if (field->pedine[i].coord.y == field->pedine[index].coord.y + col/*Deve essere nella riga successiva*/){
                 if (field->pedine[i].coord.x == field->pedine[index].coord.x + 1){/*Cerco in una diagonale*/
@@ -338,16 +339,13 @@ void promossa(field_t* field, int index){
 void sel_pedina2(enum color colore, field_t* field, vect* soluzione){
     int i;
     int inizio, fine;
-    bool_t control = FALSE;
-
-
     int c = 0;
     movable(colore, field);
     soluzione->obbligata = FALSE;
-    if (colore){
+    if (colore){/*Bianco*/
         inizio = 0;
         fine = NPEDINE / 2;
-    } else{
+    } else{/*Nero*/
         inizio = NPEDINE / 2;
         fine = NPEDINE;
     }
@@ -357,11 +355,10 @@ void sel_pedina2(enum color colore, field_t* field, vect* soluzione){
             soluzione->v[c] = i;
             c++;
             soluzione->obbligata = TRUE;
-            control = TRUE;
         }
     }
         /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
-    if (!control){
+    if (!soluzione->obbligata){
         for (i = inizio;i < fine;i++){
             if (field->pedine[i].is_movable){
                 soluzione->v[c] = i;
@@ -390,10 +387,6 @@ void sel_pedina2(enum color colore, field_t* field, vect* soluzione){
 
 void possible_moves2(enum color colore, field_t* field, int index, vect* soluzione){
     int i, c = 0;
-    /*c è l'indice dell'array di coordinate, selezione è l'indice dello stesso array che però rappresenta la selezione dell'utente*/
-
-    /*Ho un array di coordinate delle possibili mosse che vengono proposte all'utente*/
-
 
     int col;
 
@@ -405,21 +398,24 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
     if (field->partita.END_OF_PLAY)printf("END\n");
     soluzione->size = 0;
     soluzione->obbligata = FALSE;
+    soluzione->v[0] = -1;
     /*Se la pedina che devo muovere is_obbligata*/
     if (field->pedine[index].is_obbligata){
 
         int j, inizio, fine;
         soluzione->obbligata = TRUE;
-        if (!colore){
+        if (!colore){/*Nero*/
             inizio = 0;
             fine = NPEDINE / 2;
-        } else{
+        } else{/*Bianco*/
             inizio = NPEDINE / 2;
             fine = NPEDINE;
         }
+
         for (i = inizio;i < fine;i++){
             /*Controllo solo le pedine che posso mangiare perchè sono o il TOP della torre o pedina singola*/
-            if ((field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP)){
+            if ((field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP) &&
+            field->pedine[i].colore != field->pedine[index].colore){
                 /*Controllo quale o quali pedina/e devo mangiare*/
                 if (field->pedine[i].coord.y == field->pedine[index].coord.y + col/*Deve essere nella riga successiva*/){
                     if (field->pedine[i].coord.x == field->pedine[index].coord.x + 1){/*Cerco in una diagonale*/
@@ -493,7 +489,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
             }
         }
     }
-    if (c == 0){
+    if (c == 0 || soluzione->v[0] == -1){
         printf("Errore size possible moves\n");
         printf("index = %d\n", index);
         printf("movable %d\n", field->pedine[index].is_movable);
@@ -720,17 +716,19 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
     npromosseAvv1 = n_promosse(&field, WHITE);
 
     for (i = 0;i < mossa.size;i++){
-        enum color turno;
+        /*Eseguo una delle mosse*/
         spostamento_pedine(&field, colore, index, mossa.v[i]);
-        if (!colore)turno = WHITE;
-        else turno = BLACK;
+        /*Inizializzazione preventiva*/
         sol[countersol].index = -3;
         sol[countersol].score = -3;
         sol[countersol].indexb = -3;
-        res = pedina_cpu(field, turno, depth - 1);
+        /*Chiamata del ramo successivo*/
+        res = pedina_cpu(field, !colore, depth - 1);
+        /*Riassegnazione dei valori*/
         sol[countersol].index = index;
         sol[countersol].score = res.score;
         sol[countersol].indexb = mossa.v[i];
+        /*Controllo numero delle pedine*/
         npedine2 = n_pedine(&field, BLACK);
         npedineAvv2 = n_pedine(&field, WHITE);
         npromosse2 = n_promosse(&field, BLACK);
