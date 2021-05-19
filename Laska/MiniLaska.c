@@ -43,15 +43,15 @@ typedef struct coord{
     int x, y;
 }coord_t;
 
-typedef struct pair_int{
+typedef struct triple_int{
     int score;
     int index;
     int indexb;
-}pair_t;
+}triple_t;
 typedef struct vect{
     int* v;
     int size;
-    bool_t obbligata;
+    bool_t is_obbligata;
 }vect;
 typedef struct blanks{
     coord_t coord;
@@ -97,14 +97,14 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
 int coord_to_index(field_t* field, coord_t coord);
 char* coord_to_pedina(field_t* field, coord_t cor);
 int altezza_pedina(field_t* field, coord_t coord);
-pair_t cpu_turn(field_t* field);
-pair_t turn_cpu(field_t* field);
-pair_t cpu_pedina(field_t field, int depth, enum color colore);
-pair_t cpu_mossa(field_t field, int index, int depth, enum color colore);
+triple_t cpu_turn(field_t* field);
+triple_t turn_cpu(field_t* field);
+triple_t cpu_pedina(field_t field, int depth, enum color colore);
+triple_t cpu_mossa(field_t field, int index, int depth, enum color colore);
 void pedina_player(field_t* field, enum color colore);
 void sel_pedina2(enum color colore, field_t* field, vect* soluzione);
-pair_t mossa_cpu(field_t field, enum color colore, int index, int depth);
-pair_t pedina_cpu(field_t field, enum color colore, int depth);
+triple_t mossa_cpu(field_t field, enum color colore, int index, int depth);
+triple_t pedina_cpu(field_t field, enum color colore, int depth);
 int n_promosse(field_t* field, enum color colore);
 int n_pedine(field_t* field, enum color colore);
 int mossa_player(field_t* field, enum color colore, int index);
@@ -341,7 +341,7 @@ void sel_pedina2(enum color colore, field_t* field, vect* soluzione){
     int inizio, fine;
     int c = 0;
     movable(colore, field);
-    soluzione->obbligata = FALSE;
+    soluzione->is_obbligata = FALSE;
     if (colore){/*Bianco*/
         inizio = 0;
         fine = NPEDINE / 2;
@@ -354,11 +354,11 @@ void sel_pedina2(enum color colore, field_t* field, vect* soluzione){
         if (field->pedine[i].is_obbligata){
             soluzione->v[c] = i;
             c++;
-            soluzione->obbligata = TRUE;
+            soluzione->is_obbligata = TRUE;
         }
     }
         /*Se non ho mosse obbligate controllo se posso muovere la pedina*/
-    if (!soluzione->obbligata){
+    if (!soluzione->is_obbligata){
         for (i = inizio;i < fine;i++){
             if (field->pedine[i].is_movable){
                 soluzione->v[c] = i;
@@ -397,13 +397,13 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
     }
     if (field->partita.END_OF_PLAY)printf("END\n");
     soluzione->size = 0;
-    soluzione->obbligata = FALSE;
+    soluzione->is_obbligata = FALSE;
     soluzione->v[0] = -1;
     /*Se la pedina che devo muovere is_obbligata*/
     if (field->pedine[index].is_obbligata){
 
         int j, inizio, fine;
-        soluzione->obbligata = TRUE;
+        soluzione->is_obbligata = TRUE;
         if (!colore){/*Nero*/
             inizio = 0;
             fine = NPEDINE / 2;
@@ -507,12 +507,12 @@ void pedina_player(field_t* field, enum color colore){
     int i, index = NPEDINE + 1, isol = -1, indexb;
     vect selezione;
     selezione.size = 0;
-    selezione.obbligata = FALSE;
+    selezione->is_obbligata = FALSE;
     selezione.v = (int*) malloc(sizeof(int) * NPEDINE);
     movable(colore, field);
     sel_pedina2(colore, field, &selezione);
     for (i = 0;i < selezione.size;i++){
-        if (selezione.obbligata){
+        if (selezione->is_obbligata){
             printf("%d: Riga %d Colonna %d Obbligata a mangiare\n", i + 1, field->pedine[selezione.v[i]].coord.y, field->pedine[selezione.v[i]].coord.x);
         } else{
             printf("%d: Riga %d Colonna %d \n", i + 1, field->pedine[selezione.v[i]].coord.y, field->pedine[selezione.v[i]].coord.x);
@@ -569,15 +569,15 @@ int mossa_player(field_t* field, enum color colore, int index){
  * @brief Funzione che serve per invocare il turno della cpu e ritorna la mossa da eseguire
  *
  * @param field
- * @return pair_t
+ * @return triple_t
  */
-pair_t turn_cpu(field_t* field){
+triple_t turn_cpu(field_t* field){
     field_t  campo = *field;
 
     pedina_t* copiapedine = malloc(sizeof(pedina_t) * NPEDINE);
     blanks_t* copiablanks = malloc(sizeof(blanks_t) * field->nblanks);
     int i, z;
-    pair_t sol;
+    triple_t sol;
     sol.index = -3;
     sol.indexb = -3;
     sol.score = 0;
@@ -602,21 +602,21 @@ pair_t turn_cpu(field_t* field){
  * @param field
  * @param colore
  * @param depth
- * @return pair_t
+ * @return triple_t
  */
-pair_t pedina_cpu(field_t field, enum color colore, int depth){
+triple_t pedina_cpu(field_t field, enum color colore, int depth){
     int i, k = 0;
     int massimo = 0, indicemassimo = 0;
 
-    pair_t retval;
-    pair_t* max = malloc(sizeof(pair_t) * NPEDINE);
+    triple_t retval;
+    triple_t* max = malloc(sizeof(triple_t) * NPEDINE);
     vect pedine;
     pedine.size = 0;
     pedine.v = (int*) malloc(sizeof(int) * NPEDINE);
     movable(colore, &field);
     /*Se la movable non trova pedine che si possono muovere imposta lo stato di END_OF_PLAY su true*/
     if (field.partita.END_OF_PLAY){
-        pair_t res;
+        triple_t res;
         res.score = -3;
         res.indexb = -1;
         res.index = -1;
@@ -624,7 +624,7 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
     }
 
     if (depth == 0){
-        pair_t res;
+        triple_t res;
         res.score = 0;
         res.indexb = -1;
         res.index = -1;
@@ -632,7 +632,7 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
     }
     sel_pedina2(colore, &field, &pedine);
     if (pedine.size == 0){
-        pair_t res;
+        triple_t res;
         printf("Errore size pedine\n");
         res.score = 0;
         res.indexb = -1;
@@ -649,7 +649,7 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
         k++;
     }
     if (k == 0){
-        pair_t res;
+        triple_t res;
         if (!field.partita.END_OF_PLAY)printf("Errore end of play\n");
         res.score = -3;
         res.indexb = -1;
@@ -677,13 +677,13 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
  * @param colore
  * @param index
  * @param depth
- * @return pair_t
+ * @return triple_t
  */
-pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
+triple_t mossa_cpu(field_t field, enum color colore, int index, int depth){
     int i = 0, z, countersol = 0, npedine1, npedineAvv1, npedine2, npedineAvv2, npromosse1, npromosse2, npromosseAvv1, npromosseAvv2;
-    pair_t sol[NPEDINE];
-    pair_t res;
-    pair_t retval;
+    triple_t sol[NPEDINE];
+    triple_t res;
+    triple_t retval;
     pedina_t* copiapedine = (pedina_t*) malloc(sizeof(pedina_t) * NPEDINE);
     blanks_t* copiablanks = (blanks_t*) malloc(sizeof(blanks_t) * field.nblanks);
     int nblanks = field.nblanks;
@@ -1257,7 +1257,7 @@ int main(){
 
     if (selezione == 1){
         while (!field.partita.END_OF_PLAY){
-            pair_t mossacpu;
+            triple_t mossacpu;
             stampa_field(&field);
             movable(BLACK, &field);
             if (field.partita.END_OF_PLAY){

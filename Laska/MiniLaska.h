@@ -4,29 +4,29 @@ typedef struct field field_t;
 typedef enum bools bool_t;
 
 enum bools{
-    TRUE=1,
-    FALSE=0
+    TRUE = 1,
+    FALSE = 0
 };
 
 
 enum color{
-    BLACK=0,
-    WHITE=1
+    BLACK = 0,
+    WHITE = 1
 };
 
 
 enum height{
-    SINGLE,TOP,BOTTOM,CENTER
+    SINGLE, TOP, BOTTOM, CENTER
 };
 
 
 enum is_promoted{
-    YES=1,NO=0
+    YES = 1, NO = 0
 };
 
 
 typedef struct coord{
-    int x,y;
+    int x, y;
 }coord_t;
 
 
@@ -34,8 +34,8 @@ struct blanks{
     coord_t coord;
 };
 /**
- * @brief 
- * @struct 
+ * @brief
+ * @struct
  */
 typedef struct pedina{
     enum color colore;
@@ -57,25 +57,25 @@ typedef struct play{
 /*Ad ogni turno controllo la variabile della partita per capire se è finita*/
 
 struct field{
-    int rows,cols;
-    struct pedina *pedine;
-    struct blanks *blanks;
+    int rows, cols;
+    struct pedina* pedine;
+    struct blanks* blanks;
     unsigned char nblanks;
     struct play partita;
 };
-typedef struct pair_int{
+typedef struct triple_int{
     int score;
     int index;
     int indexb;
-}pair_t;
+}triple_t;
 
 /*LISTA DELLE FUNZIONI*/
-void sel_pedina(enum color colore,field_t *field);
-void movable(enum color colore, field_t *field);
-void stampa_field(field_t *field);
-void endgame(field_t *field);
-void start_game2(field_t *field);
-void free_pedine(field_t *field);
-void spostamento_pedine(field_t *field, enum color colore, int index, int indexb);
-pair_t cpu_turn(field_t *field);
+void pedina_player(field_t* field, enum color colore);
+void movable(enum color colore, field_t* field);
+void stampa_field(field_t* field);
+void endgame(field_t* field);
+void start_game(field_t* field);
+void free_pedine(field_t* field);
+void spostamento_pedine(field_t* field, enum color colore, int index, int indexb);
+triple_t cpu_turn(field_t* field);
 /*FINE LISTA DELLE FUNZIONI*/
