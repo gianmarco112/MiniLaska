@@ -312,7 +312,7 @@ void obbligata(field_t* field, int index, enum color colore){
                 }
             }
 
-        } else{
+        } else if (!(field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP)){
             /*Nel caso non sia la pedina top o singola resetto il suo stato di promozione*/
             field->pedine[i].promossa = NO;
         }
@@ -326,9 +326,9 @@ void obbligata(field_t* field, int index, enum color colore){
  * @param index
  */
 void promossa(field_t* field, int index){
-    if (field->pedine[index].colore && field->pedine[index].coord.y == field->rows && !field->pedine[index].promossa){
+    if (field->pedine[index].colore && field->pedine[index].coord.y == NROWS){
         field->pedine[index].promossa = YES;
-    } else if (!field->pedine[index].colore && field->pedine[index].coord.y == 1 && !field->pedine[index].promossa){
+    } else if ((!field->pedine[index].colore) && field->pedine[index].coord.y == 1){
         field->pedine[index].promossa = YES;
     } else{
         field->pedine[index].promossa = NO;
@@ -396,9 +396,9 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
 
     int col;
 
-    if (colore){
+    if (colore){/*Bianco*/
         col = 1;
-    } else{
+    } else{/*Nero*/
         col = -1;
     }
     if (field->partita.END_OF_PLAY)printf("END\n");
@@ -425,7 +425,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
                 /*Controllo quale o quali pedina/e devo mangiare*/
                 if (field->pedine[i].coord.y == field->pedine[index].coord.y + col/*Deve essere nella riga successiva*/){
                     if (field->pedine[i].coord.x == field->pedine[index].coord.x + 1){/*Cerco in una diagonale*/
-                        /*Cerco gli spazi di destinazione della mia pedina*/
+                        /*Cerco lo spazio di destinazione della mia pedina*/
                         for (j = 0;j < field->nblanks;j++){
                             if (field->blanks[j].coord.y == field->pedine[index].coord.y + col + col &&
                             (field->blanks[j].coord.x == field->pedine[index].coord.x + 2)){
@@ -435,7 +435,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
                             }
                         }
                     } else if (field->pedine[i].coord.x == field->pedine[index].coord.x - 1){/*Cerco nell'altra diagonale*/
-                        /*Cerco gli spazi di destinazione della mia pedina*/
+                        /*Cerco lo spazio di destinazione della mia pedina*/
                         for (j = 0;j < field->nblanks;j++){
                             if (field->blanks[j].coord.y == field->pedine[index].coord.y + col + col &&
                             (field->blanks[j].coord.x == field->pedine[index].coord.x - 2)){
