@@ -206,8 +206,8 @@ void movable(enum color colore, field_t* field){
         field->pedine[i].is_movable = FALSE;
         field->pedine[i].is_obbligata = FALSE;
         if (field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP){
-            obbligata(field, i, colore);
             promossa(field, i);
+            obbligata(field, i, colore);
             for (j = 0;j < field->nblanks;j++){
                 if (field->blanks[j].coord.y == field->pedine[i].coord.y + col && (
                     field->blanks[j].coord.x == field->pedine[i].coord.x + 1 ||
