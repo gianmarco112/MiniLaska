@@ -501,6 +501,12 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
 
 
 }
+/**
+ * @brief Funzione responsabile per la visualizzazione e della selezione delle pedine per il player, chiama successivamente la mossa_player e infine esegue lo spostamento delle pedine
+ *
+ * @param field
+ * @param colore
+ */
 void pedina_player(field_t* field, enum color colore){
     int i, index = NPEDINE + 1, isol = -1, indexb;
     vect selezione;
@@ -564,7 +570,7 @@ int mossa_player(field_t* field, enum color colore, int index){
     return indexb;
 }
 /**
- * @brief Funzione che serve per invocare il turno della cpu e mi ritorna la mossa
+ * @brief Funzione che serve per invocare il turno della cpu e ritorna la mossa da eseguire
  *
  * @param field
  * @return pair_t
@@ -748,13 +754,16 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
         }
 
     }
+    /*Controllo possibili errori*/
     if (countersol < 0)printf("Errore countersol\n");
     retval = sol[0];
+    /*Scelta del percorso migliore*/
     while (countersol > 0){
         if (retval.score < sol[countersol].score)
             retval = sol[countersol];
         countersol--;
     }
+    /*free degli array creati*/
     free(copiablanks);
     free(copiapedine);
     free(mossa.v);
@@ -773,10 +782,9 @@ pair_t mossa_cpu(field_t field, enum color colore, int index, int depth){
  * @param indexb
  */
 void spostamento_pedine(field_t* field, enum color colore, int index, int indexb){
-    bool_t debug = FALSE;
     coord_t mossa;
     mossa = field->blanks[indexb].coord;
-    /*Mi ritorna l'indice dello spazio bianco di destinazione dal quale estraggo le cordinate*/
+    /*Ritorna l'indice dello spazio bianco di destinazione dal quale estraggo le cordinate*/
 
     /*Se è una mossa obbligata*/
     if (field->pedine[index].is_obbligata){
@@ -885,11 +893,11 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
     } else{
         int i;
 
-       /*Scambio la pedina e lo spazio*/
+       /*Metto lo spazio nelle coordinate della pedina di partenza*/
         field->blanks[indexb].coord = field->pedine[index].coord;
 
 
-
+        /*Sposto tutte le pedine*/
         for (i = 0; i < NPEDINE; i++){
             if (i != index && field->pedine[i].coord.x == field->pedine[index].coord.x &&
                 field->pedine[i].coord.y == field->pedine[index].coord.y){
@@ -901,11 +909,6 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
         promossa(field, index);
 
     }
-
-    if (debug)printf("Pedina in %d%d\n", field->pedine[index].coord.y, field->pedine[index].coord.x);
-    if (debug)printf("Spazio in %d%d\n", field->blanks[indexb].coord.y, field->blanks[indexb].coord.x);
-
-    if (debug)print_pedine(field);
 }
 
 
@@ -926,12 +929,6 @@ char* coord_to_pedina(field_t* field, coord_t cor){
     }
     return sol;
 }
-/**
- * @brief function responsable of looking for movable pedine or obliged eats and it prints the list of available ones
- *
- * @param colore
- * @param field
- */
 
 
 /**
