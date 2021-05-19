@@ -247,7 +247,6 @@ void movable(enum color colore, field_t* field){
  * @param index
  * @param colore
  */
-
 void obbligata(field_t* field, int index, enum color colore){
     int i, j, inizio, fine, col;
     if (!colore){
