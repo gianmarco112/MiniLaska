@@ -33,10 +33,6 @@ enum height{
 };
 
 
-enum is_promoted{
-    YES = 1, NO = 0
-};
-
 
 typedef struct coord{
     int x, y;
@@ -62,7 +58,7 @@ typedef struct pedina{
     enum color colore;
     struct coord coord;
     enum height altezza;
-    enum is_promoted promossa;
+    bool_t promossa;
     bool_t is_movable;
     bool_t is_obbligata;
     bool_t in_game;
@@ -264,7 +260,7 @@ void movable(enum color colore, field_t* field){
                     field->END_OF_PLAY = FALSE;
                 }
             }
-            if (field->pedine[i].promossa == YES){
+            if (field->pedine[i].promossa == TRUE){
                 for (j = 0;j < field->nblanks;j++){
                     if (field->blanks[j].coord.y == field->pedine[i].coord.y - col && (
                         field->blanks[j].coord.x == field->pedine[i].coord.x + 1 ||
@@ -361,7 +357,7 @@ void obbligata(field_t* field, int index, enum color colore){
 
         } else if (!(field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP)){
             /*Nel caso non sia la pedina top o singola resetto il suo stato di promozione*/
-            field->pedine[i].promossa = NO;
+            field->pedine[i].promossa = FALSE;
         }
     }
 
@@ -374,9 +370,9 @@ void obbligata(field_t* field, int index, enum color colore){
  */
 void promossa(field_t* field, int index){
     if (field->pedine[index].colore && field->pedine[index].coord.y == NROWS){
-        field->pedine[index].promossa = YES;
+        field->pedine[index].promossa = TRUE;
     } else if ((!field->pedine[index].colore) && field->pedine[index].coord.y == 1){
-        field->pedine[index].promossa = YES;
+        field->pedine[index].promossa = TRUE;
     }
 }
 
@@ -1086,7 +1082,7 @@ int n_promosse(field_t* field, enum color colore){
     }
     for (i = inizio;i < fine;i++){
         if ((field->pedine[i].altezza == SINGLE || field->pedine[i].altezza == TOP) &&
-        field->pedine[i].in_game && field->pedine[i].promossa == YES)
+        field->pedine[i].in_game && field->pedine[i].promossa == TRUE)
             num++;
     }
     return num;
@@ -1202,7 +1198,7 @@ void create_pedine(field_t* field){
     for (i = 0;i < NPEDINE;i++){
         field->pedine[i].altezza = SINGLE;
         field->pedine[i].in_game = TRUE;
-        field->pedine[i].promossa = NO;
+        field->pedine[i].promossa = FALSE;
     }
     for (i = 0;i < NPEDINE / 2;i++){
         field->pedine[i].colore = WHITE;
