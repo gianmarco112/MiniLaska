@@ -2,7 +2,7 @@
  * @file Minilaska.c
  * @author Gianmarco Perini (883492@stud.unive.it)
  * @brief Mini Laska con interfaccia da terminale
- * @version 0.1
+ * @version 2.0
  * @date 16-03-2021
  *
  * @copyright Copyright (c) 2021
