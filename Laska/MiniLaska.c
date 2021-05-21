@@ -884,7 +884,6 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
                         /*Se trovo la pedina centrale allora c'è una pedina bottom*/
                         if (indicebottom != -1){/*Se l'ho già trovata la rimetto a bottom*/
                             field->pedine[indicebottom].altezza = BOTTOM;
-                            break;
                         } else{
                             indicebottom = -2;
                         }
@@ -893,8 +892,6 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
                         if (indicebottom == -1){
                             indicebottom = i;
                             field->pedine[i].altezza = CENTER;
-                        } else if (indicebottom == -2){
-                            break;
                         }
 
                     }
