@@ -9,36 +9,54 @@
  *
  */
 
-
-
+/**
+ * @brief Boolean type
+ *
+ */
 typedef enum bool{
     TRUE = 1,
     FALSE = 0
 }bool_t;
 
-
+/**
+ * @brief Type for BLACK and WHITE color
+ *
+ */
 enum color{
     BLACK = 0,
     WHITE = 1
 };
 
-
+/**
+ * @brief Height of pedina
+ *
+ */
 enum height{
     SINGLE, TOP, BOTTOM, CENTER
 };
 
-
-
+/**
+ * @brief Coord type
+ *
+ */
 typedef struct coord{
     int x, y;
 }coord_t;
 
+/**
+ * @brief 3 int for the cpu recursion
+ *
+ */
 typedef struct triple_int{
     int score;
     int index;
     int indexb;
 }triple_t;
 
+/**
+ * @brief Array with size and a bool
+ *
+ */
 typedef struct vect{
     int* v;
     int size;
@@ -69,31 +87,12 @@ typedef struct field{
 
 
 /*LISTA DELLE FUNZIONI*/
-/*Funzioni di controllo*/
-void movable(enum color colore, field_t* field);
-void obbligata(field_t* field, int index, enum color colore);
-void promossa(field_t* field, int index);
-/*Pedine*/
-void sel_pedina2(enum color colore, field_t* field, vect* soluzione);
-void possible_moves2(enum color colore, field_t* field, int index, vect* soluzione);
-void spostamento_pedine(field_t* field, enum color colore, int index, int indexb);
-/*Player*/
-void pedina_player(field_t* field, enum color colore);
-int mossa_player(field_t* field, enum color colore, int index);
-/*CPU*/
-triple_t turn_cpu(field_t* field);
-triple_t pedina_cpu(field_t field, enum color colore, int depth);
-triple_t mossa_cpu(field_t field, enum color colore, int index, int depth);
-/*Score*/
-int n_promosse(field_t* field, enum color colore);
-int n_pedine(field_t* field, enum color colore);
-/*Funzioni di stampa*/
-void stampa_field(field_t* field);
-void coord_to_char(field_t* field, int x, int y, char* ped);
-/*Funzioni di inizio/fine game*/
 void start_game(field_t* field);
-void create_pedine(field_t* field);
-void create_blanks(field_t* field);
+void stampa_field(field_t* field);
+void movable(enum color colore, field_t* field);
+void pedina_player(field_t* field, enum color colore);
+triple_t turn_cpu(field_t* field);
+void spostamento_pedine(field_t* field, enum color colore, int index, int indexb);
 void free_pedine(field_t* field);
 void endgame(int giocatore);
 /*FINE LISTA DELLE FUNZIONI*/

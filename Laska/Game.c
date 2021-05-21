@@ -40,7 +40,6 @@ int main(){
     }
     if (selezione == 2){
         while (!field.END_OF_PLAY){
-            print_pedine(&field);
             stampa_field(&field);
             movable(BLACK, &field);
             if (field.END_OF_PLAY){
@@ -48,7 +47,6 @@ int main(){
                 break;
             }
             pedina_player(&field, BLACK);
-            print_pedine(&field);
             stampa_field(&field);
             movable(WHITE, &field);
             if (field.END_OF_PLAY){

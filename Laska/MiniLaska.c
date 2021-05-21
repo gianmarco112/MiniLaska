@@ -65,8 +65,6 @@ typedef struct pedina{
 }pedina_t;
 
 
-/*Ad ogni turno controllo la variabile della partita per capire se è finita*/
-
 typedef struct field{
     int rows, cols;
     struct pedina* pedine;
@@ -190,15 +188,15 @@ int min(int a, int b){ if (a < b)return a;else return b; }
 
 void endgame(int giocatore){
     printf("__      _______ _______ _______ ____  _____  _____ \n");
-    printf("\ \    / /_   _|__   __|__   __/ __ \|  __ \|_   _|   /\ \n");
-    printf(" \ \  / /  | |    | |     | | | |  | | |__) | | |    /  \ \n");
-    printf("  \ \/ /   | |    | |     | | | |  | |  _  /  | |   / /\ \ \n");
-    printf("   \  /   _| |_   | |     | | | |__| | | \ \ _| |_ / ____ \  \n");
-    printf("    \/   |_____|  |_|     |_|  \____/|_|  \_\_____/_/    \_\ \n");
+    printf("\\ \\    / /_   _|__   __|__   __/ __ \\|  __ \\|_   _|   /\\ \n");
+    printf(" \\ \\  / /  | |    | |     | | | |  | | |__) | | |    /  \\ \n");
+    printf("  \\ \\/ /   | |    | |     | | | |  | |  _  /  | |   / /\\ \\ \n");
+    printf("   \\  /   _| |_   | |     | | | |__| | | \\ \\ _| |_ / ____ \\  \n");
+    printf("    \\/   |_____|  |_|     |_|  \\____/|_|  \\_\\_____/_/    \\_\\ \n");
     printf(" \n");
     if (giocatore){
         printf(" _____  __  \n");
-        printf("|  __ \/_ | \n");
+        printf("|  __ \\/_ | \n");
         printf("| |__) || | \n");
         printf("|  ___/ | | \n");
         printf("| |     | | \n");
@@ -206,7 +204,7 @@ void endgame(int giocatore){
         printf(" \n");
     } else if (giocatore == 2){
         printf(" _____ ___   \n");
-        printf("|  __ \__ \  \n");
+        printf("|  __ \\__ \\  \n");
         printf("| |__) | ) | \n");
         printf("|  ___/ / /  \n");
         printf("| |    / /_  \n");
@@ -214,11 +212,11 @@ void endgame(int giocatore){
         printf(" \n");
     } else if (!giocatore){
         printf("  _____ _____  _    _  \n");
-        printf(" / ____|  __ \| |  | | \n");
+        printf(" / ____|  __ \\| |  | | \n");
         printf("| |    | |__) | |  | | \n");
         printf("| |    |  ___/| |  | | \n");
         printf("| |____| |    | |__| | \n");
-        printf(" \_____|_|     \____/  \n");
+        printf(" \\_____|_|     \\____/  \n");
         printf(" \n");
     }
     printf(" \n");
@@ -883,21 +881,28 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
                     /*Sposto le pedine che compongono la torre*/
                     field->pedine[i].coord = mossa;
                     if (field->pedine[i].altezza == CENTER){
-
-                        if (indicebottom != -1){
+                        /*Se trovo la pedina centrale allora c'è una pedina bottom*/
+                        if (indicebottom != -1){/*Se l'ho già trovata la rimetto a bottom*/
                             field->pedine[indicebottom].altezza = BOTTOM;
+                            break;
+                        } else{
+                            indicebottom = -2;
                         }
-                        break;
-                    } else if (field->pedine[i].altezza == BOTTOM){
 
-                        indicebottom = i;
-                        field->pedine[i].altezza = CENTER;
+                    } else if (field->pedine[i].altezza == BOTTOM){
+                        if (indicebottom == -1){
+                            indicebottom = i;
+                            field->pedine[i].altezza = CENTER;
+                        } else if (indicebottom == -2){
+                            break;
+                        }
+
                     }
                 }
             }
 
 
-            if (indicebottom != -1 && field->pedine[indicebottom].altezza != BOTTOM){
+            if (indicebottom > 0 && field->pedine[indicebottom].altezza != BOTTOM){
                 field->pedine[indexM].altezza = BOTTOM;
                 field->pedine[indexM].coord = mossa;
             } else{
@@ -1247,7 +1252,7 @@ void start_game(field_t* field){
     field->END_OF_PLAY = FALSE;
 
 }
-int main(){
+/* int main(){
 
     int selezione = 0;
     field_t field;
@@ -1265,7 +1270,6 @@ int main(){
             stampa_field(&field);
             movable(BLACK, &field);
             if (field.END_OF_PLAY){
-                /* printf("Vince il giocatore\n"); */
                 endgame(1);
                 break;
             }
@@ -1275,7 +1279,6 @@ int main(){
             stampa_field(&field);
             movable(WHITE, &field);
             if (field.END_OF_PLAY){
-                /* printf("Vince il computer\n"); */
                 endgame(0);
                 break;
             }
@@ -1305,4 +1308,4 @@ int main(){
     printf("Grazie di aver giocato\n");
     free_pedine(&field);
     return 0;
-}
+} */
