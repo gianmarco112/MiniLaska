@@ -212,7 +212,7 @@ void endgame(int giocatore){
         printf("| |    / /_  \n");
         printf("|_|   |____| \n");
         printf(" \n");
-    } else if{
+    } else if (!giocatore){
         printf("  _____ _____  _    _  \n");
         printf(" / ____|  __ \| |  | | \n");
         printf("| |    | |__) | |  | | \n");
@@ -261,6 +261,7 @@ void movable(enum color colore, field_t* field){
                 }
             }
             if (field->pedine[i].promossa == TRUE){
+                /*Se è promossa può muoversi all'indietro*/
                 for (j = 0;j < field->nblanks;j++){
                     if (field->blanks[j].coord.y == field->pedine[i].coord.y - col && (
                         field->blanks[j].coord.x == field->pedine[i].coord.x + 1 ||
@@ -273,15 +274,6 @@ void movable(enum color colore, field_t* field){
         }
 
     }
-    /*if (!field->END_OF_PLAY){
-        bool_t ok = FALSE;
-        for (i = 0;i < NPEDINE;i++){
-            if (field->pedine->is_movable){
-                ok = TRUE;
-            }
-        }
-        field->END_OF_PLAY = ok;
-    }*/
 }
 
 /**
@@ -948,19 +940,8 @@ void spostamento_pedine(field_t* field, enum color colore, int index, int indexb
 }
 
 
-
-
-
-
-
-
-
-/*se il player sbaglia pedina o vuole cambiarla*/
-void ops_sel(){
-
-}
 /**
- * @brief Date delle cordinate mi restituisce un char che serve per la print del campo di gioco
+ * @brief Date delle cordinate riempie un char* che serve per la print del campo di gioco
  *
  * @param field
  * @param x
