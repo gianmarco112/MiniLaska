@@ -1,4 +1,13 @@
-
+/**
+ * @file Game.c
+ * @author Gianmarco Perini (883492@stud.unive.it)
+ * @brief
+ * @version 2
+ * @date 27-05-212021
+ *
+ * @copyright Copyright (c) 2021
+ *
+ */
 #include <stdio.h>
 #include "MiniLaska.h"
 /*gcc MiniLaska.c -c -oMiniLaska.o -ansi -pedantic*/
