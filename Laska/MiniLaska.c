@@ -629,7 +629,6 @@ triple_t turn_cpu(field_t* field){
         if (z < field->nblanks)
             field->blanks[z] = copiablanks[z];
     }
-
     return sol;
 }
 /**
@@ -684,7 +683,6 @@ triple_t pedina_cpu(field_t field, enum color colore, int depth){
         if (!field.END_OF_PLAY)printf("Errore end of play\n");
         res.score = -3;
         return res;
-
     }
     massimo = max[0].score;
     for (i = 0;i < k;i++){
