@@ -67,6 +67,7 @@ typedef struct blanks{
     coord_t coord;
 }blanks_t;
 
+
 typedef struct pedina{
     enum color colore;
     struct coord coord;
@@ -87,12 +88,42 @@ typedef struct field{
 
 
 /*LISTA DELLE FUNZIONI*/
+/**
+ * @brief Function that initialize the field you pass by pointer
+ *
+ * @param field
+ */
 void start_game(field_t* field);
+/**
+ * @brief It prints the field
+ *
+ * @param field
+ */
 void stampa_field(field_t* field);
-void movable(enum color colore, field_t* field);
+/**
+ * @brief
+ *
+ * @param field
+ * @param colore
+ */
 void pedina_player(field_t* field, enum color colore);
+/**
+ * @brief
+ *
+ * @param field
+ * @return triple_t
+ */
 triple_t turn_cpu(field_t* field);
-void spostamento_pedine(field_t* field, enum color colore, int index, int indexb);
+/**
+ * @brief
+ *
+ * @param field
+ */
 void free_pedine(field_t* field);
+/**
+ * @brief
+ *
+ * @param giocatore
+ */
 void endgame(int giocatore);
 /*FINE LISTA DELLE FUNZIONI*/

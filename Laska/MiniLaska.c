@@ -547,6 +547,9 @@ void pedina_player(field_t* field, enum color colore){
     selezione.is_obbligata = FALSE;
     selezione.v = (int*) malloc(sizeof(int) * NPEDINE);
     movable(colore, field);
+    if (field->END_OF_PLAY){
+        return;
+    }
     sel_pedina2(colore, field, &selezione);
     for (i = 0;i < selezione.size;i++){
         if (selezione.is_obbligata){
@@ -629,6 +632,7 @@ triple_t turn_cpu(field_t* field){
         if (z < field->nblanks)
             field->blanks[z] = copiablanks[z];
     }
+    spostamento_pedine(field, BLACK, sol.index, sol.indexb);
     return sol;
 }
 /**
