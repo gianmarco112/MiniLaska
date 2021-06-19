@@ -535,11 +535,7 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
 
 }
 /**
-<<<<<<< HEAD
- * @brief Funzione che gestisce la decisione della pedina da spostare
-=======
  * @brief Funzione responsabile per la visualizzazione e della selezione delle pedine per il player, chiama successivamente la mossa_player e infine esegue lo spostamento delle pedine
->>>>>>> 296ce07380c31fb6abba00ce21ad83890d8f55b9
  *
  * @param field
  * @param colore
