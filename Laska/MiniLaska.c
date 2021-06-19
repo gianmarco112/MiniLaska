@@ -499,9 +499,9 @@ void possible_moves2(enum color colore, field_t* field, int index, vect* soluzio
 }
 /**
  * @brief Funzione che gestisce la decisione della pedina da spostare
- * 
- * @param field 
- * @param colore 
+ *
+ * @param field
+ * @param colore
  */
 void pedina_player(field_t* field, enum color colore){
     int i, index = NPEDINE + 1, isol = -1, indexb;
@@ -606,7 +606,7 @@ pair_t turn_cpu(field_t* field){
  */
 pair_t pedina_cpu(field_t field, enum color colore, int depth){
     int i, k = 0;
-    int massimo = 0, indicemassimo = 0;
+    int massimo = 0, indicemassimo;
 
     pair_t retval;
     pair_t* max = malloc(sizeof(pair_t) * NPEDINE);
@@ -658,6 +658,7 @@ pair_t pedina_cpu(field_t field, enum color colore, int depth){
 
     }
     massimo = max[0].score;
+    indicemassimo = 0;
     for (i = 0;i < k;i++){
         if (max[i].score > massimo){
             massimo = max[i].score;
