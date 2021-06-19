@@ -1,81 +1,129 @@
+/**
+ * @file MiniLaska.h
+ * @author Gianmarco Perini (883492@stud.unive.it)
+ * @brief
+ * @version 2.0
+ * @date 20-05-2021
+ *
+ * @copyright Copyright (c) 2021
+ *
+ */
 
-typedef struct field field_t;
+/**
+ * @brief Boolean type
+ *
+ */
+typedef enum bool{
+    TRUE = 1,
+    FALSE = 0
+}bool_t;
 
-typedef enum bools bool_t;
-
-enum bools{
-    TRUE=1,
-    FALSE=0
-};
-
-
+/**
+ * @brief Type for BLACK and WHITE color
+ *
+ */
 enum color{
-    BLACK=0,
-    WHITE=1
+    BLACK = 0,
+    WHITE = 1
 };
 
-
+/**
+ * @brief Height of pedina
+ *
+ */
 enum height{
-    SINGLE,TOP,BOTTOM,CENTER
+    SINGLE, TOP, BOTTOM, CENTER
 };
 
-
-enum is_promoted{
-    YES=1,NO=0
-};
-
-
+/**
+ * @brief Coord type
+ *
+ */
 typedef struct coord{
-    int x,y;
+    int x, y;
 }coord_t;
 
-
-struct blanks{
-    coord_t coord;
-};
 /**
- * @brief 
- * @struct 
+ * @brief 3 int for the cpu recursion
+ *
  */
+typedef struct triple_int{
+    int score;
+    int index;
+    int indexb;
+}triple_t;
+
+/**
+ * @brief Array with size and a bool
+ *
+ */
+typedef struct vect{
+    int* v;
+    int size;
+    bool_t is_obbligata;
+}vect;
+
+typedef struct blanks{
+    coord_t coord;
+}blanks_t;
+
+
 typedef struct pedina{
     enum color colore;
     struct coord coord;
     enum height altezza;
-    enum is_promoted promossa;
+    bool_t promossa;
     bool_t is_movable;
     bool_t is_obbligata;
     bool_t in_game;
 }pedina_t;
 
-/*TODO   Aggiungere tutti i controlli per la variabile in_game*/
-
-/*Le pedine sono divise a metà tra i due colori, prima le BIANCHE e POI le NERE*/
-typedef struct play{
-    bool_t END_OF_PLAY;
-    bool_t VICTORY_P1;
-}play_t;
-/*Ad ogni turno controllo la variabile della partita per capire se è finita*/
-
-struct field{
-    int rows,cols;
-    struct pedina *pedine;
-    struct blanks *blanks;
+typedef struct field{
+    int rows, cols;
+    struct pedina* pedine;
+    struct blanks* blanks;
     unsigned char nblanks;
-    struct play partita;
-};
-typedef struct pair_int{
-    int score;
-    int index;
-    int indexb;
-}pair_t;
+    bool_t END_OF_PLAY;
+}field_t;
+
 
 /*LISTA DELLE FUNZIONI*/
-void sel_pedina(enum color colore,field_t *field);
-void movable(enum color colore, field_t *field);
-void stampa_field(field_t *field);
-void endgame(field_t *field);
-void start_game2(field_t *field);
-void free_pedine(field_t *field);
-void spostamento_pedine(field_t *field, enum color colore, int index, int indexb);
-pair_t cpu_turn(field_t *field);
+/**
+ * @brief Function that initialize the field you pass by pointer
+ *
+ * @param field
+ */
+void start_game(field_t* field);
+/**
+ * @brief It prints the field
+ *
+ * @param field
+ */
+void stampa_field(field_t* field);
+/**
+ * @brief
+ *
+ * @param field
+ * @param colore
+ */
+void pedina_player(field_t* field, enum color colore);
+/**
+ * @brief
+ *
+ * @param field
+ * @return triple_t
+ */
+triple_t turn_cpu(field_t* field);
+/**
+ * @brief
+ *
+ * @param field
+ */
+void free_pedine(field_t* field);
+/**
+ * @brief
+ *
+ * @param giocatore
+ */
+void endgame(int giocatore);
 /*FINE LISTA DELLE FUNZIONI*/

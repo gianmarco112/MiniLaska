@@ -669,6 +669,24 @@ void sel_pedina(enum color colore, field_t* field){
     indexb = possible_moves(colore, field, index);
     spostamento_pedine(field, colore, index, indexb);
 }
+/**
+ * @brief Date le cordinate mi restituisce un char corrispondente alla struttura della pedina in quela casella
+ *        Funcion that given a set of coordinates gives back the char vector with the list of pawns for the print funcion
+ * @param field
+ * @param cor
+ * @return char*
+ */
+char* coord_to_pedina(field_t* field, coord_t cor){
+    char* sol = malloc(sizeof(char) * 20);
+    int index = coord_to_index(field, cor);
+    if (field->pedine[index].altezza == SINGLE)
+        sol[1] = field->pedine[index].colore;
+    else if (field->pedine[index].altezza == TOP){
+
+    }
+    return sol;
+}
+
 int main(){
     
    /*  if (selezione==1){

@@ -1,3 +1,0 @@
-C:/Users/samu9/Documents/GitHub/MiniLaska/cmake-build-debug/CMakeFiles/MiniLaska.dir
-C:/Users/samu9/Documents/GitHub/MiniLaska/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/samu9/Documents/GitHub/MiniLaska/cmake-build-debug/CMakeFiles/rebuild_cache.dir
